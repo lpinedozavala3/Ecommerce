@@ -47,6 +47,13 @@ export class ProductoDetalleComponent implements OnInit, OnDestroy {
     });
   }
 
+  getCategorias(): string {
+    if (!this.producto?.categorias?.length) {
+      return '';
+    }
+    return this.producto.categorias.map(c => c.nombreCategoria).join(' / ');
+  }
+
   ngOnDestroy(): void {
     this.sub?.unsubscribe();
   }

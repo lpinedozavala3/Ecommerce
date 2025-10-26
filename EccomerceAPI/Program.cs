@@ -34,13 +34,13 @@ builder.Services.AddSingleton<IUriService>(o =>
 builder.Services.AddTransient<ITenantResolver, TenantResolver>();
 builder.Services.AddTransient<ICatalogoService, CatalogoService>();
 builder.Services.AddTransient<IAuthService, AuthService>();
-    app.UseSwagger();
 builder.Services.AddHttpContextAccessor(); // útil si TenantResolver lee headers/host
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger();
     app.UseSwaggerUI();
 }
 

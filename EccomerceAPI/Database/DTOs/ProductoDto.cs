@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Database.DTOs
 {
-    public sealed class ProductoDto
+    public class ProductoDto
     {
         public Guid ProductoId { get; set; }
         public string? NombrePublico { get; set; }
