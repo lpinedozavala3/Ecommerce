@@ -29,6 +29,15 @@ namespace Database.Models
         public virtual DbSet<Producto> Productos { get; set; } = null!;
         public virtual DbSet<Tiendum> Tienda { get; set; } = null!;
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Server=tcp:simpleapi.database.windows.net,1433;Database=simple_factura_ecommerce;User id=busti;password=O9imoyax!2;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=120;");
+            }
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Categorium>(entity =>
@@ -768,6 +777,8 @@ namespace Database.Models
                     .HasMaxLength(200)
                     .IsUnicode(false)
                     .HasColumnName("NOMBRE_PUBLICO");
+
+                entity.Property(e => e.Novedad).HasColumnName("NOVEDAD");
 
                 entity.Property(e => e.Precio).HasColumnName("PRECIO");
 
