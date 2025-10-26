@@ -15,6 +15,7 @@ namespace Database.DTOs
         public string? ImagenBase64 { get; set; }
         public bool VisibleEnTienda { get; set; }
         public bool? Destacado { get; set; }
+        public bool Exento { get; set; }
 
         public List<CategoriaDto> Categorias { get; set; } = new();
 

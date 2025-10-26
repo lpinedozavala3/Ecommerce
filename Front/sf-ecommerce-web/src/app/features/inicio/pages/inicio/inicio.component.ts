@@ -1,5 +1,6 @@
 // features/inicio/inicio.component.ts
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { CatalogoService } from 'src/app/core/services/catalogo.service';
 import { CarritoService } from 'src/app/core/services/carrito.service';
 import { Producto } from 'src/app/core/models/producto';
@@ -34,7 +35,8 @@ export class InicioComponent implements OnInit {
   constructor(
     private catalogo: CatalogoService,
     private carrito: CarritoService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private router: Router
   ) { this.starterPage(); }
 
   ngOnInit(): void {
@@ -109,7 +111,11 @@ export class InicioComponent implements OnInit {
       cantidad: 1,
       precioNeto: p.precio,
       iva: Math.round(p.precio * 0.19),
-      esExento: false
+      esExento: !!p.exento
     });
+  }
+
+  verDetalle(p: Producto) {
+    this.router.navigate(['/producto', p.productoId]);
   }
 }

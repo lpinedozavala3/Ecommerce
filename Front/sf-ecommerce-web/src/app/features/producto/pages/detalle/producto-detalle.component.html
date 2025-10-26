@@ -1,0 +1,63 @@
+<ng-container *ngIf="!loading && producto; else estado">
+  <section class="detalle container">
+    <div class="media">
+      <img
+        *ngIf="producto?.imagenBase64; else sinImagen"
+        [src]="'data:image/png;base64,' + producto?.imagenBase64"
+        [alt]="producto?.nombrePublico || 'Producto'"
+      />
+      <ng-template #sinImagen>
+        <div class="placeholder">
+          <mat-icon>image</mat-icon>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="info">
+      <p class="categoria" *ngIf="producto?.categorias?.length">
+        {{ producto?.categorias?.map(c => c.nombreCategoria).join(' / ') }}
+      </p>
+      <h1>{{ producto?.nombrePublico || 'Producto sin nombre' }}</h1>
+
+      <p class="descripcion" *ngIf="producto?.descripcionCorta">
+        {{ producto?.descripcionCorta }}
+      </p>
+
+      <div class="precio">
+        <span class="monto">${{ producto?.precio | number:'1.0-0' }}</span>
+        <span class="unidad" *ngIf="producto?.unidadMedida">/{{ producto?.unidadMedida }}</span>
+      </div>
+
+      <div class="stock" [class.sin-stock]="producto?.stock === 0">
+        <mat-icon>{{ producto?.stock ? 'inventory_2' : 'error_outline' }}</mat-icon>
+        <span>
+          {{ producto?.stock ? (producto?.stock + ' unidades disponibles') : 'Sin stock disponible' }}
+        </span>
+      </div>
+
+      <button mat-flat-button color="primary" (click)="agregarAlCarrito()" [disabled]="producto?.stock === 0">
+        <mat-icon>add_shopping_cart</mat-icon>
+        Agregar al carrito
+      </button>
+
+      <article class="descripcion-larga" *ngIf="producto?.descripcionLarga">
+        <h2>Descripción</h2>
+        <p>{{ producto?.descripcionLarga }}</p>
+      </article>
+    </div>
+  </section>
+</ng-container>
+
+<ng-template #estado>
+  <div class="estado container" *ngIf="loading; else sinProducto">
+    <div class="skeleton"></div>
+    <div class="skeleton texto"></div>
+  </div>
+</ng-template>
+
+<ng-template #sinProducto>
+  <div class="estado container">
+    <mat-icon>error_outline</mat-icon>
+    <p>El producto no está disponible en este momento.</p>
+  </div>
+</ng-template>

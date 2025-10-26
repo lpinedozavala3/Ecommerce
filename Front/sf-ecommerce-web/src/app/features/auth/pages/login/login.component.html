@@ -1,0 +1,44 @@
+<div class="layout">
+  <a class="volver" routerLink="/inicio">
+    <mat-icon>arrow_back</mat-icon>
+    Volver a la tienda
+  </a>
+
+  <section class="card">
+    <header>
+      <h1>Bienvenido de vuelta</h1>
+      <p>Ingresa a tu cuenta para continuar con tus compras.</p>
+    </header>
+
+    <form [formGroup]="formulario" (ngSubmit)="submit()" novalidate>
+      <mat-form-field appearance="outline" class="field">
+        <mat-label>Correo electrónico</mat-label>
+        <input matInput type="email" formControlName="email" placeholder="tu@email.com" />
+        <mat-error *ngIf="email?.hasError('required')">El correo es obligatorio.</mat-error>
+        <mat-error *ngIf="email?.hasError('email')">Introduce un correo válido.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="field">
+        <mat-label>Contraseña</mat-label>
+        <input matInput type="password" formControlName="password" placeholder="••••••" />
+        <mat-error *ngIf="password?.hasError('required')">La contraseña es obligatoria.</mat-error>
+        <mat-error *ngIf="password?.hasError('minlength')">Debe tener al menos 6 caracteres.</mat-error>
+      </mat-form-field>
+
+      <label class="recordar">
+        <mat-checkbox formControlName="recordar">Recordar mi sesión</mat-checkbox>
+        <a class="olvide" routerLink="/contacto">¿Olvidaste tu contraseña?</a>
+      </label>
+
+      <button mat-flat-button color="primary" type="submit" [disabled]="loading">
+        <mat-icon>login</mat-icon>
+        Iniciar sesión
+      </button>
+    </form>
+
+    <footer>
+      <span>¿Aún no tienes cuenta?</span>
+      <a routerLink="/auth/registro">Regístrate aquí</a>
+    </footer>
+  </section>
+</div>

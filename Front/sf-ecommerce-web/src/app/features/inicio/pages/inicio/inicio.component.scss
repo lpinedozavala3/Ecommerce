@@ -132,6 +132,18 @@
   display: grid;
   place-items: center;
 
+  .image-btn {
+    border: none;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+  }
+
   img {
     width: 100%;
     height: 100%;
@@ -169,11 +181,21 @@
   padding: 0.9rem 0.9rem 1rem;
 
   .title {
+    display: inline-flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    border: none;
+    background: transparent;
     font-size: 1.05rem;
     line-height: 1.3;
     margin: 0 0 0.25rem;
     height: 2.6rem; /* dos líneas aprox */
     overflow: hidden;
+    font-weight: 600;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    padding: 0;
   }
 
   .meta {

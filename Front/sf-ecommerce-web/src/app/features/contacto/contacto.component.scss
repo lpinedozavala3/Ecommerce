@@ -1,0 +1,25 @@
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+}
+
+.placeholder {
+  background: #fef2f2;
+  border-radius: 16px;
+  padding: 3rem 2rem;
+  text-align: center;
+
+  h1 {
+    margin: 0 0 1rem;
+    font-size: clamp(2rem, 2vw + 1.4rem, 2.4rem);
+    color: #b91c1c;
+  }
+
+  p {
+    margin: 0;
+    color: #7f1d1d;
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+}

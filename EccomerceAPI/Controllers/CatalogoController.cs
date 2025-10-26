@@ -45,6 +45,19 @@ namespace EccomerceAPI.Controllers
             return Ok(response);
         }
 
+        [HttpGet("productos/{productoId:guid}")]
+        public async Task<ActionResult<ProductoDetalleDto>> ObtenerDetalle(Guid productoId)
+        {
+            var (_, emisorId) = await _tenant.ResolveAsync(HttpContext);
+            var detalle = await _catalogo.ObtenerDetalle(productoId, emisorId);
+            if (detalle is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(detalle);
+        }
+
         // GET /api/catalogo/categorias
         [HttpGet("categorias")]
         public async Task<ActionResult<IEnumerable<CategoriaDto>>> GetCategorias()

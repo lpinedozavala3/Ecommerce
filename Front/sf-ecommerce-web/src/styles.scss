@@ -1,4 +1,21 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap');
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Be Vietnam Pro', Roboto, 'Helvetica Neue', sans-serif;
+  background: #fffaf5;
+  color: #1f2937;
+}
+
+button[mat-flat-button], button[mat-stroked-button], a[mat-flat-button], a[mat-stroked-button] {
+  text-transform: none;
+  font-weight: 600;
+}
+
+.mat-badge-content {
+  font-family: inherit;
+}

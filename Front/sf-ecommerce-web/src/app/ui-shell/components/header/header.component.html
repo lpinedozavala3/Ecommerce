@@ -1,16 +1,34 @@
 <header class="topbar">
-  <a class="brand" routerLink="/inicio">🛍️ Mi Tienda</a>
+  <a class="brand" routerLink="/inicio">
+    <mat-icon>storefront</mat-icon>
+    Mi Tienda
+  </a>
 
   <nav class="menu">
-    <a routerLink="/catalogo" routerLinkActive="on">Catálogo</a>
-    <a routerLink="/ofertas" class="disabled">Ofertas</a>
-    <a routerLink="/contacto" class="disabled">Contacto</a>
+    <a routerLink="/inicio" routerLinkActive="active">Tienda</a>
+    <a routerLink="/ofertas" routerLinkActive="active">Ofertas</a>
+    <a routerLink="/novedades" routerLinkActive="active">Novedades</a>
+    <a routerLink="/contacto" routerLinkActive="active">Contacto</a>
   </nav>
 
-  <span class="spacer"></span>
+  <div class="actions">
+    <a class="cart" routerLink="/carrito" [matBadge]="itemsEnCarrito" [matBadgeHidden]="!itemsEnCarrito" matBadgeColor="accent">
+      <mat-icon>shopping_cart</mat-icon>
+    </a>
 
-  <a class="link" routerLink="/carrito">
-    <mat-icon>shopping_cart</mat-icon>
-  </a>
-  <a class="link" routerLink="/auth">Ingresar</a>
+    <ng-container *ngIf="usuario; else login">
+      <span class="user">Hola, {{ usuario.nombreCompleto }}</span>
+      <button mat-stroked-button color="primary" (click)="cerrarSesion()">
+        <mat-icon>logout</mat-icon>
+        Salir
+      </button>
+    </ng-container>
+
+    <ng-template #login>
+      <a mat-flat-button color="primary" routerLink="/auth/login">
+        <mat-icon>person</mat-icon>
+        Ingresar
+      </a>
+    </ng-template>
+  </div>
 </header>

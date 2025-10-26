@@ -45,16 +45,20 @@
   <ng-container *ngIf="!loading; else skeletons">
     <mat-card class="card" *ngFor="let p of productos" appearance="outlined">
       <div class="image-wrap">
-        <img
-          *ngIf="p.imagenBase64; else noImg"
-          [src]="'data:image/png;base64,' + p.imagenBase64"
-          [alt]="p.nombrePublico || 'Producto'"
-          loading="lazy"
-        />
+        <button type="button" class="image-btn" (click)="verDetalle(p)">
+          <img
+            *ngIf="p.imagenBase64; else noImg"
+            [src]="'data:image/png;base64,' + p.imagenBase64"
+            [alt]="p.nombrePublico || 'Producto'"
+            loading="lazy"
+          />
+        </button>
         <ng-template #noImg>
-          <div class="img-fallback">
-            <mat-icon>image</mat-icon>
-          </div>
+          <button type="button" class="image-btn" (click)="verDetalle(p)">
+            <div class="img-fallback">
+              <mat-icon>image</mat-icon>
+            </div>
+          </button>
         </ng-template>
 
         <span class="badge" *ngIf="p.destacado">Destacado</span>
@@ -62,9 +66,9 @@
       </div>
 
       <mat-card-content class="content">
-        <h3 class="title" [matTooltip]="p.nombrePublico || 'Producto'">
+        <button type="button" class="title" (click)="verDetalle(p)" [matTooltip]="p.nombrePublico || 'Producto'">
           {{ p.nombrePublico || 'Producto' }}
-        </h3>
+        </button>
 
         <div class="meta">
           <!-- la API ahora devuelve `categorias` como array; mostramos la primera si existe -->

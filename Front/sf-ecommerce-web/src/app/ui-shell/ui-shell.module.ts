@@ -2,6 +2,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatBadgeModule } from '@angular/material/badge';
 
 import { AppShellComponent } from './components/app-shell/app-shell.component';
 import { HeaderComponent } from './components/header/header.component';
@@ -21,6 +23,8 @@ import { MatCardModule } from "@angular/material/card";
     CommonModule,
     RouterModule,
     MatIconModule,
+    MatButtonModule,
+    MatBadgeModule,
     MatFormFieldModule,
     MatChipsModule,
     MatCardModule
