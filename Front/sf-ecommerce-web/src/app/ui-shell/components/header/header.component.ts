@@ -19,7 +19,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   itemsEnCarrito = 0;
   usuario: UsuarioSesion | null = null;
   categorias: Categoria[] = [];
-  searchControl = new FormControl('', { nonNullable: true });
+  searchControl = new FormControl('');
   selectedCategoriaId: string | null = null;
 
   private subs: Subscription[] = [];
