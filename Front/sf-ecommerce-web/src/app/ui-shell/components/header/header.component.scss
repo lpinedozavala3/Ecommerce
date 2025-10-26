@@ -1,0 +1,6 @@
+.topbar{display:flex;gap:16px;align-items:center;padding:10px 16px;border-bottom:1px solid #eee;background:#faf6ef;}
+.brand{font-weight:700;text-decoration:none;color:#333;}
+.menu a,.link{margin-right:12px;text-decoration:none;color:#333;}
+.menu a.on{font-weight:600;border-bottom:2px solid #333;}
+.menu .disabled{opacity:.5;pointer-events:none}
+.spacer{flex:1 1 auto;}

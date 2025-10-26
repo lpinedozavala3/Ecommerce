@@ -1,0 +1,114 @@
+<section class="hero container">
+  <h1>Descubre Productos Excepcionales</h1>
+  <p>Encuentra todo lo que necesitas con la mejor calidad y precios competitivos</p>
+
+  <div class="search-row">
+    <mat-form-field appearance="outline" class="buscador">
+      <mat-icon matPrefix>search</mat-icon>
+      <mat-label>Buscar productos...</mat-label>
+      <input
+        matInput
+        [(ngModel)]="searchText"
+        (keyup.enter)="onEnterSearch()"
+        placeholder="Ej. audífonos, mouse, cables…"
+        aria-label="Buscar productos"
+      />
+      <button
+        mat-icon-button
+        matSuffix
+        *ngIf="searchText"
+        (click)="clearSearch()"
+        aria-label="Limpiar búsqueda"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+
+  <div class="chips">
+  <mat-chip-list class="chips-wrap" aria-label="Categorías">
+    <mat-chip
+      *ngFor="let c of categorias"
+      (click)="selectCategoria(c)"
+      [class.active-chip]="(selectedCategoriaId ?? '') === (c.idCategoria ?? '')"
+      selectable="false"
+      disableRipple
+    >
+      {{ c.nombreCategoria }}
+    </mat-chip>
+  </mat-chip-list>
+</div>
+
+</section>
+
+<section class="grid container">
+  <ng-container *ngIf="!loading; else skeletons">
+    <mat-card class="card" *ngFor="let p of productos" appearance="outlined">
+      <div class="image-wrap">
+        <img
+          *ngIf="p.imagenBase64; else noImg"
+          [src]="'data:image/png;base64,' + p.imagenBase64"
+          [alt]="p.nombrePublico || 'Producto'"
+          loading="lazy"
+        />
+        <ng-template #noImg>
+          <div class="img-fallback">
+            <mat-icon>image</mat-icon>
+          </div>
+        </ng-template>
+
+        <span class="badge" *ngIf="p.destacado">Destacado</span>
+        <span class="badge danger" *ngIf="p.stock <= 0">Sin stock</span>
+      </div>
+
+      <mat-card-content class="content">
+        <h3 class="title" [matTooltip]="p.nombrePublico || 'Producto'">
+          {{ p.nombrePublico || 'Producto' }}
+        </h3>
+
+        <div class="meta">
+          <!-- la API ahora devuelve `categorias` como array; mostramos la primera si existe -->
+          <span class="cat">{{ getPrimaryCategoria(p) || '—' }}</span>
+        </div>
+
+        <div class="price">
+          {{ p.precio | number:'1.0-0' }}
+          <span class="currency">$</span>
+        </div>
+
+        <div class="actions">
+          <button
+            mat-flat-button
+            color="primary"
+            (click)="agregar(p)"
+            [disabled]="p.stock <= 0"
+          >
+            <mat-icon>add_shopping_cart</mat-icon>
+            {{ p.stock > 0 ? 'Agregar' : 'Sin stock' }}
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="paginator-row">
+      <mat-paginator
+        [length]="page.totalElements"
+        [pageIndex]="page.pageNumber"
+        [pageSize]="page.pageSize"
+        [pageSizeOptions]="[8, 12, 16, 24]"
+        (page)="onPageChange($event)"
+      ></mat-paginator>
+    </div>
+  </ng-container>
+
+  <ng-template #skeletons>
+    <div class="skeleton-grid">
+      <div class="skeleton-card" *ngFor="let _ of [].constructor(page.pageSize)">
+        <div class="sk-img shimmer"></div>
+        <div class="sk-line shimmer"></div>
+        <div class="sk-line short shimmer"></div>
+        <div class="sk-btn shimmer"></div>
+      </div>
+    </div>
+  </ng-template>
+</section>
