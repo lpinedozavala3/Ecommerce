@@ -1,0 +1,91 @@
+############# Angular / Frontend #############
+
+# compiled output (sin "/" para que aplique en subcarpetas como Front/)
+dist/
+tmp/
+out-tsc/
+bazel-out/
+
+# dependencies
+node_modules/
+
+# profiling
+chrome-profiler-events*.json
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# VSCode (con excepciones útiles si las necesitas)
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/
+
+# misc
+.sass-cache/
+connect.lock
+coverage/
+libpeerconnection.log
+npm-debug.log*
+yarn-error.log*
+testem.log
+typings/
+
+
+############# .NET / Backend (C#) #############
+
+# Build results
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Tt]est[Rr]esults/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+
+# VS / tooling
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.dbmdl
+*.pdb
+*.obj
+*.cache
+
+# Publish outputs
+publish/
+out/
+wwwroot/dist/
+
+# NuGet
+*.nupkg
+*.snupkg
+*.nuspec
+packages/
+!packages/build/
+
+# Config locales (evita subir secretos locales)
+appsettings.*.Development.json
+
+############# General / SO #############
+
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
+*.swo
