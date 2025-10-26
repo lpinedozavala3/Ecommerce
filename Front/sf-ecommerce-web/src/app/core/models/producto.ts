@@ -19,6 +19,7 @@ export interface Producto {
   categorias?: Categoria[];
   destacado?: boolean;
   exento?: boolean;
+  novedad?: boolean;
 }
 
 export interface ProductoDetalle extends Producto {

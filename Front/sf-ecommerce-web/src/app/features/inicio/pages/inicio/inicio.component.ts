@@ -1,52 +1,94 @@
 // features/inicio/inicio.component.ts
-import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, ChangeDetectorRef, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CatalogoService } from 'src/app/core/services/catalogo.service';
 import { CarritoService } from 'src/app/core/services/carrito.service';
 import { Producto } from 'src/app/core/models/producto';
-import { Subject } from 'rxjs';
-import { Categoria } from 'src/app/core/models/producto';
 import { Page } from 'src/app/core/models/Page';
 import { ProductoFilter } from 'src/app/core/models/Filters/ProductoFilter';
 import { PagedResponse } from 'src/app/core/models/Paged';
-import { debounceTime } from 'rxjs/operators';
+import { Categoria } from 'src/app/core/models/Categoria.';
+import { Subscription, timer } from 'rxjs';
 
 @Component({
   selector: 'app-inicio',
   templateUrl: './inicio.component.html',
   styleUrls: ['./inicio.component.scss']
 })
-export class InicioComponent implements OnInit {
-
-  // Filtro claro
+export class InicioComponent implements OnInit, OnDestroy {
   searchText = '';
   selectedCategoriaId: string | null = null;
 
-  // Datos UI
-  categorias: Categoria[] = [];           // cargadas desde API
   productos: Producto[] = [];
-  loading = false;
+  novedades: Producto[] = [];
+  categorias: Categoria[] = [];
 
-  // Paginación (mismo patrón)
+  loadingProductos = false;
+  loadingNovedades = false;
+
   page = new Page();
 
-  private search$ = new Subject<void>();
+  slides = [
+    {
+      title: 'Tu tienda digital minimalista',
+      caption: 'Experiencias de compra simples, sin ruido y con envíos rápidos en todo el país.',
+      theme: 'sunrise',
+      cta: 'Explorar productos'
+    },
+    {
+      title: 'Colecciones seleccionadas',
+      caption: 'Cada semana curamos nuevas colecciones inspiradas en las tendencias del momento.',
+      theme: 'night',
+      cta: 'Ver colecciones'
+    },
+    {
+      title: 'Pagos seguros y flexibles',
+      caption: 'Aceptamos tarjetas, transferencias y billeteras digitales con confirmación inmediata.',
+      theme: 'ocean',
+      cta: 'Conocer más'
+    }
+  ];
+  slideIndex = 0;
+
+  private subs = new Subscription();
+  private autoSlideSub?: Subscription;
 
   constructor(
     private catalogo: CatalogoService,
     private carrito: CarritoService,
     private ref: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) { this.starterPage(); }
 
   ngOnInit(): void {
-    this.catalogo.obtenerCategorias().subscribe(cats => {
-      // Insertamos “Todos” (id null) como opción UI:
-      this.categorias = [{ idCategoria: '', nombreCategoria: 'Todos', slugCategoria: 'todos' }, ...(cats || [])];
-    });
+    this.subs.add(
+      this.catalogo.obtenerCategorias().subscribe(cats => {
+        this.categorias = cats ?? [];
+        this.ref.markForCheck();
+      })
+    );
 
-    this.search$.pipe(debounceTime(300)).subscribe(() => this.setPage({ offset: 0 }));
-    this.setPage({ offset: 0 });
+    this.subs.add(
+      this.route.queryParamMap.subscribe(params => {
+        const search = params.get('q') ?? '';
+        const categoria = params.get('categoria');
+        const pageParam = Number(params.get('page') ?? '1');
+        const pageIndex = Number.isFinite(pageParam) ? Math.max(pageParam - 1, 0) : 0;
+
+        this.searchText = search;
+        this.selectedCategoriaId = categoria;
+        this.setPage({ offset: pageIndex });
+      })
+    );
+
+    this.loadNovedades();
+    this.startAutoSlide();
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+    this.autoSlideSub?.unsubscribe();
   }
 
   starterPage() {
@@ -55,7 +97,7 @@ export class InicioComponent implements OnInit {
   }
 
   setPage(pageInfo: { offset: number }) {
-    this.loading = true;
+    this.loadingProductos = true;
     this.page.pageNumber = pageInfo.offset;
 
     const filter: ProductoFilter = {
@@ -66,12 +108,11 @@ export class InicioComponent implements OnInit {
     this.catalogo.getDataByPage(filter, this.page).subscribe({
       next: (res: PagedResponse<Producto>) => {
         this.productos = res.data;
-        console.log(this.productos);
         this.setPagefromResponse(this.page, res);
-        this.loading = false;
+        this.loadingProductos = false;
         this.ref.detectChanges();
       },
-      error: _ => { this.loading = false; this.ref.detectChanges(); }
+      error: _ => { this.loadingProductos = false; this.ref.detectChanges(); }
     });
   }
 
@@ -82,22 +123,68 @@ export class InicioComponent implements OnInit {
     current.totalElements = resp.totalRecords;
   }
 
-  onEnterSearch() { this.search$.next(); }
-  clearSearch()    { this.searchText = ''; this.search$.next(); }
-
-  selectCategoria(cat: Categoria) {
-    this.selectedCategoriaId = cat.idCategoria || null; // vacío => “Todos”
-    this.setPage({ offset: 0 });
-  }
-
   onPageChange(e: { pageIndex: number; pageSize: number }) {
     this.page.pageSize = e.pageSize;
-    this.setPage({ offset: e.pageIndex });
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { page: e.pageIndex + 1 },
+      queryParamsHandling: 'merge'
+    });
   }
 
   // Obtiene el nombre de la primera categoría del producto (si existe)
   getPrimaryCategoria(p: Producto): string | undefined {
     return (p.categorias && p.categorias.length) ? p.categorias[0].nombreCategoria : undefined;
+  }
+
+  loadNovedades(): void {
+    this.loadingNovedades = true;
+    const novedadesPage = new Page();
+    novedadesPage.pageSize = 4;
+
+    this.catalogo.getDataByPage({ esNovedad: true }, novedadesPage).subscribe({
+      next: (res: PagedResponse<Producto>) => {
+        this.novedades = res.data;
+        this.loadingNovedades = false;
+        this.ref.detectChanges();
+      },
+      error: _ => {
+        this.loadingNovedades = false;
+        this.ref.detectChanges();
+      }
+    });
+  }
+
+  selectCategoria(cat: Categoria): void {
+    this.router.navigate(['/inicio'], {
+      queryParams: { categoria: cat.idCategoria, page: 1 },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  onHeroCta(): void {
+    this.router.navigate(['/novedades']);
+  }
+
+  private startAutoSlide(): void {
+    this.autoSlideSub = timer(6000, 6000).subscribe(() => this.nextSlide());
+  }
+
+  nextSlide(): void {
+    this.slideIndex = (this.slideIndex + 1) % this.slides.length;
+  }
+
+  prevSlide(): void {
+    this.slideIndex = (this.slideIndex - 1 + this.slides.length) % this.slides.length;
+  }
+
+  get categoriaSeleccionadaNombre(): string | null {
+    if (!this.selectedCategoriaId) {
+      return null;
+    }
+
+    const categoria = this.categorias.find(c => c.idCategoria === this.selectedCategoriaId);
+    return categoria?.nombreCategoria ?? null;
   }
 
   agregar(p: Producto) {

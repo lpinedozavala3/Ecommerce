@@ -1,25 +1,310 @@
-.container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 3rem 1.5rem;
+:host {
+  display: block;
 }
 
-.placeholder {
-  background: #ecfdf5;
-  border-radius: 16px;
-  padding: 3rem 2rem;
-  text-align: center;
+.pedidos {
+  width: min(1100px, 92vw);
+  margin: clamp(3rem, 6vw, 4rem) auto clamp(4rem, 6vw, 5rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2rem, 4vw, 3rem);
+}
+
+.pedidos--restringido {
+  .pedidos__hero {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  a[mat-flat-button] {
+    margin-top: 1.5rem;
+    align-self: flex-start;
+  }
+}
+
+.pedidos__hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  background: linear-gradient(140deg, rgba(59, 130, 246, 0.12), rgba(99, 102, 241, 0.08));
+  border-radius: 28px;
+  padding: clamp(2rem, 4vw, 3rem);
+
+  .eyebrow {
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: var(--app-text-soft);
+    margin-bottom: 0.6rem;
+  }
 
   h1 {
     margin: 0 0 1rem;
-    font-size: clamp(2rem, 2vw + 1.4rem, 2.4rem);
-    color: #047857;
+    font-size: clamp(2rem, 3.5vw, 2.7rem);
+    line-height: 1.1;
   }
 
   p {
     margin: 0;
-    color: #065f46;
-    font-size: 1.05rem;
-    line-height: 1.6;
+    color: var(--app-text-muted);
+    max-width: 520px;
   }
+
+  .hero__stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+
+    mat-card {
+      border-radius: 18px;
+      padding: 1.2rem 1.4rem;
+      display: grid;
+      gap: 0.4rem;
+
+      .label {
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        font-size: 0.7rem;
+        color: var(--app-text-soft);
+      }
+
+      strong {
+        font-size: 1.4rem;
+      }
+    }
+  }
+
+  @media (max-width: 900px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.alert {
+  padding: 1rem 1.25rem;
+  border-radius: 16px;
+  background: rgba(239, 68, 68, 0.08);
+  color: #b91c1c;
+}
+
+.pedidos__lista {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.pedido {
+  border-radius: 22px;
+  padding: clamp(1.6rem, 3vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+
+    h2 {
+      margin: 0;
+      font-size: 1.4rem;
+    }
+
+    .fecha {
+      color: var(--app-text-soft);
+      font-size: 0.9rem;
+      text-transform: capitalize;
+    }
+
+    .estado {
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+      background: rgba(99, 102, 241, 0.12);
+      color: var(--app-accent);
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+  }
+
+  .pedido__body {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .pedido__items {
+    display: grid;
+    gap: 1rem;
+
+    .item {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px dashed rgba(15, 23, 42, 0.1);
+
+      strong {
+        display: block;
+      }
+
+      span {
+        color: var(--app-text-soft);
+        font-size: 0.9rem;
+      }
+
+      .subtotal {
+        font-weight: 600;
+        color: var(--app-text-primary);
+      }
+    }
+  }
+
+  .pedido__meta {
+    display: grid;
+    gap: 0.75rem;
+    align-content: start;
+
+    .totales {
+      display: grid;
+      gap: 0.35rem;
+      font-size: 0.9rem;
+      color: var(--app-text-soft);
+    }
+
+    .total {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+  }
+}
+
+.pedidos__skeleton {
+  display: grid;
+  gap: 1.5rem;
+
+  .skeleton-card {
+    height: 160px;
+    border-radius: 22px;
+    background: linear-gradient(90deg, rgba(148, 163, 184, 0.16), rgba(203, 213, 225, 0.3), rgba(148, 163, 184, 0.16));
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+.pedidos__empty {
+  padding: 4rem 1rem;
+  text-align: center;
+  color: var(--app-text-soft);
+}
+
+.direcciones {
+  display: grid;
+  grid-template-columns: minmax(320px, 1.1fr) minmax(320px, 1fr);
+  gap: 1.5rem;
+
+  @media (max-width: 960px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.direccion-resumen {
+  border-radius: 22px;
+  padding: clamp(1.5rem, 3vw, 2rem);
+  display: grid;
+  gap: 1rem;
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .chip {
+      padding: 0.35rem 0.8rem;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.14);
+      color: #047857;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+    }
+
+    .actualizada {
+      margin: 0;
+      color: var(--app-text-soft);
+      font-size: 0.85rem;
+      text-transform: capitalize;
+    }
+  }
+
+  ul {
+    margin: 0;
+    padding: 0 0 0 1rem;
+    display: grid;
+    gap: 0.4rem;
+    color: var(--app-text-muted);
+  }
+}
+
+.direcciones__form {
+  border-radius: 24px;
+  padding: clamp(1.6rem, 3vw, 2.1rem);
+  display: grid;
+  gap: 1.1rem;
+
+  h3 {
+    margin: 0;
+    font-size: 1.35rem;
+  }
+
+  form {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .inline-fields {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+  }
+
+  button[mat-flat-button] {
+    justify-self: flex-start;
+    border-radius: 999px;
+    padding-inline: 1.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .feedback {
+    margin-top: 0.5rem;
+    padding: 0.9rem 1rem;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: #047857;
+    background: rgba(16, 185, 129, 0.12);
+
+    mat-icon {
+      color: #047857;
+    }
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+:host ::ng-deep .mat-mdc-progress-spinner circle {
+  stroke: currentColor;
 }

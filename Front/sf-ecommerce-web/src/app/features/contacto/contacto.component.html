@@ -1,4 +1,107 @@
-<section class="placeholder container">
-  <h1>Contacto</h1>
-  <p>Muy pronto podrás escribirnos directamente desde aquí. Por ahora, puedes comunicarte con nosotros a través de nuestras redes sociales.</p>
+<section class="contacto">
+  <div class="contacto__intro">
+    <p class="eyebrow">Contacto</p>
+    <h1>Hablemos sobre tu próximo proyecto</h1>
+    <p>Completa el formulario y te responderemos en menos de 24 horas hábiles. También puedes escribirnos por los canales destacados.</p>
+  </div>
+
+  <div class="contacto__grid">
+    <mat-card class="contacto__info" appearance="outlined">
+      <h2>Canales directos</h2>
+      <p class="description">Nuestro equipo multidisciplinario está listo para ayudarte con soporte, ventas corporativas y alianzas.</p>
+
+      <ul>
+        <li *ngFor="let canal of canales">
+          <mat-icon>{{ canal.icono }}</mat-icon>
+          <div>
+            <strong>{{ canal.titulo }}</strong>
+            <span>{{ canal.descripcion }}</span>
+          </div>
+        </li>
+      </ul>
+
+      <div class="contacto__meta">
+        <mat-icon>schedule</mat-icon>
+        <div>
+          <strong>Horario de atención</strong>
+          <span>Lunes a viernes 09:00 a 18:00 hrs.</span>
+        </div>
+      </div>
+
+      <div class="contacto__meta">
+        <mat-icon>mail</mat-icon>
+        <div>
+          <strong>Correo</strong>
+          <span>hola@mitienda.cl</span>
+        </div>
+      </div>
+    </mat-card>
+
+    <mat-card class="contacto__form" appearance="outlined">
+      <form [formGroup]="contactoForm" (ngSubmit)="enviar()" novalidate>
+        <div class="field-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Nombre completo</mat-label>
+            <input matInput formControlName="nombre" autocomplete="name" />
+            <mat-error *ngIf="controls.nombre.touched && controls.nombre.invalid">
+              Ingresa un nombre de al menos 3 caracteres.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" type="email" autocomplete="email" />
+            <mat-error *ngIf="controls.email.touched && controls.email.hasError('required')">
+              El email es obligatorio.
+            </mat-error>
+            <mat-error *ngIf="controls.email.touched && controls.email.hasError('email')">
+              Ingresa un correo electrónico válido.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Teléfono (opcional)</mat-label>
+            <input matInput formControlName="telefono" autocomplete="tel" />
+            <mat-error *ngIf="controls.telefono.touched && controls.telefono.invalid">
+              Usa solo números, espacios o símbolo +.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Motivo del contacto</mat-label>
+            <mat-select formControlName="motivo">
+              <mat-option value="soporte">Soporte postventa</mat-option>
+              <mat-option value="ventas">Consulta comercial</mat-option>
+              <mat-option value="alianzas">Alianzas estratégicas</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="mensaje">
+          <mat-label>Cuéntanos en qué podemos ayudarte</mat-label>
+          <textarea matInput rows="5" formControlName="mensaje"></textarea>
+          <mat-error *ngIf="controls.mensaje.touched && controls.mensaje.invalid">
+            Describe tu solicitud con al menos 10 caracteres.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-checkbox formControlName="acepta">
+          Acepto el uso de mis datos para recibir respuesta a mi consulta.
+        </mat-checkbox>
+        <mat-error class="checkbox-error" *ngIf="controls.acepta.touched && controls.acepta.invalid">
+          Debes aceptar la política de privacidad para continuar.
+        </mat-error>
+
+        <button mat-flat-button color="primary" type="submit">Enviar mensaje</button>
+
+        <mat-card *ngIf="enviado" class="contacto__success" appearance="outlined">
+          <mat-icon>check_circle</mat-icon>
+          <div>
+            <strong>Mensaje enviado con éxito</strong>
+            <span>Gracias por escribirnos. Nuestro equipo se comunicará contigo pronto.</span>
+          </div>
+        </mat-card>
+      </form>
+    </mat-card>
+  </div>
 </section>

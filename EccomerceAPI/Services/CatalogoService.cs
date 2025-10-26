@@ -35,6 +35,7 @@ namespace EccomerceAPI.Services
                     Stock           = p.Stock,
                     ImagenBase64    = p.ImagenBase64,
                     VisibleEnTienda = p.VisibleEnTienda,
+                    Novedad         = p.Novedad,
                     Exento          = p.Exento,
                     Categorias = p.IdCategoria
                         .OrderBy(c => c.NombreCategoria)
@@ -65,6 +66,7 @@ namespace EccomerceAPI.Services
                     ImagenBase64 = p.ImagenBase64,
                     VisibleEnTienda = p.VisibleEnTienda,
                     Destacado = null,
+                    Novedad = p.Novedad,
                     Exento = p.Exento,
                     DescripcionCorta = p.DescripcionCorta,
                     DescripcionLarga = p.DescripcionLarga,
@@ -101,6 +103,7 @@ namespace EccomerceAPI.Services
                         ImagenBase64 = p.ImagenBase64,
                         VisibleEnTienda = p.VisibleEnTienda,
                         Destacado = null,
+                        Novedad = p.Novedad,
                         Exento = p.Exento,
                         Categorias = p.IdCategoria
                             .OrderBy(c => c.NombreCategoria)
