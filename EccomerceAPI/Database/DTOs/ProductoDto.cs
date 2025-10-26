@@ -16,6 +16,7 @@ namespace Database.DTOs
         public bool VisibleEnTienda { get; set; }
         public bool? Destacado { get; set; }
         public bool Exento { get; set; }
+        public bool Novedad { get; set; }
 
         public List<CategoriaDto> Categorias { get; set; } = new();
 

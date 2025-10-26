@@ -1,4 +1,127 @@
-<section class="placeholder container">
-  <h1>Mis pedidos</h1>
-  <p>Aquí podrás revisar el historial de tus compras. Estamos trabajando para habilitar esta sección muy pronto.</p>
+<section class="pedidos">
+  <header class="pedidos__hero">
+    <div>
+      <p class="eyebrow">Mi panel</p>
+      <h1>Resumen de tus pedidos</h1>
+      <p>Visualiza el estado de tus compras, descarga comprobantes y gestiona tus direcciones de despacho desde un solo lugar.</p>
+    </div>
+    <div class="hero__stats">
+      <mat-card appearance="outlined">
+        <span class="label">Pedidos</span>
+        <strong>{{ pedidos.length }}</strong>
+      </mat-card>
+      <mat-card appearance="outlined">
+        <span class="label">Total invertido</span>
+        <strong>{{ totalInvertido | currency:'CLP':'symbol-narrow':'1.0-0' }}</strong>
+      </mat-card>
+    </div>
+  </header>
+
+  <mat-tab-group animationDuration="400ms">
+    <mat-tab label="Historial de pedidos">
+      <div class="pedidos__lista" *ngIf="pedidos.length; else sinPedidos">
+        <mat-card class="pedido" appearance="outlined" *ngFor="let pedido of pedidos">
+          <header>
+            <div>
+              <h2>{{ pedido.numero }}</h2>
+              <span class="fecha">{{ pedido.fecha }}</span>
+            </div>
+            <span class="estado" [class.entregado]="pedido.estado === 'Entregado'">{{ pedido.estado }}</span>
+          </header>
+          <div class="pedido__body">
+            <div class="pedido__items">
+              <div class="item" *ngFor="let item of pedido.items">
+                <div>
+                  <strong>{{ item.nombre }}</strong>
+                  <span>Cantidad: {{ item.cantidad }}</span>
+                </div>
+                <span class="subtotal">{{ item.subtotal | currency:'CLP':'symbol-narrow':'1.0-0' }}</span>
+              </div>
+            </div>
+            <div class="pedido__meta">
+              <span class="tracking">Tracking: {{ pedido.tracking }}</span>
+              <div class="total">Total pagado {{ pedido.total | currency:'CLP':'symbol-narrow':'1.0-0' }}</div>
+              <div class="acciones">
+                <button mat-stroked-button color="primary">Ver boleta</button>
+                <button mat-flat-button color="primary">Reordenar</button>
+              </div>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+      <ng-template #sinPedidos>
+        <div class="pedidos__empty">Aún no registramos pedidos en tu cuenta.</div>
+      </ng-template>
+    </mat-tab>
+
+    <mat-tab label="Direcciones de despacho">
+      <div class="direcciones">
+        <div class="direcciones__lista">
+          <mat-card class="direccion" appearance="outlined" *ngFor="let direccion of direcciones">
+            <header>
+              <div>
+                <span class="alias">{{ direccion.alias }}</span>
+                <strong>{{ direccion.nombre }}</strong>
+              </div>
+              <span class="chip" [class.principal]="direccion.principal">
+                {{ direccion.principal ? 'Principal' : 'Secundaria' }}
+              </span>
+            </header>
+            <p>{{ direccion.direccion }}</p>
+            <p>{{ direccion.ciudad }}</p>
+            <p>{{ direccion.telefono }}</p>
+            <div class="acciones">
+              <button mat-stroked-button color="primary" (click)="establecerPrincipal(direccion)" [disabled]="direccion.principal">
+                Establecer como principal
+              </button>
+              <button mat-icon-button aria-label="Editar"><mat-icon>edit</mat-icon></button>
+            </div>
+          </mat-card>
+        </div>
+
+        <mat-card class="direcciones__form" appearance="outlined">
+          <h3>Nueva dirección</h3>
+          <form [formGroup]="direccionForm" (ngSubmit)="crearDireccion()" novalidate>
+            <mat-form-field appearance="outline">
+              <mat-label>Alias</mat-label>
+              <input matInput formControlName="alias" />
+              <mat-error *ngIf="direccionForm.controls.alias.touched && direccionForm.controls.alias.invalid">
+                Debe tener al menos 3 caracteres.
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Nombre y apellido</mat-label>
+              <input matInput formControlName="nombre" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Dirección</mat-label>
+              <input matInput formControlName="direccion" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Ciudad / Comuna</mat-label>
+              <input matInput formControlName="ciudad" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Teléfono</mat-label>
+              <input matInput formControlName="telefono" />
+              <mat-error *ngIf="direccionForm.controls.telefono.touched && direccionForm.controls.telefono.invalid">
+                Usa solo números, espacios o símbolo +.
+              </mat-error>
+            </mat-form-field>
+
+            <button mat-flat-button color="primary" type="submit">Guardar dirección</button>
+
+            <mat-card *ngIf="guardado" class="feedback" appearance="outlined">
+              <mat-icon>check_circle</mat-icon>
+              <span>Dirección guardada correctamente.</span>
+            </mat-card>
+          </form>
+        </mat-card>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
 </section>
