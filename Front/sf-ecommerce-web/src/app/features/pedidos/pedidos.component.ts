@@ -1,6 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 import { AuthStateService } from 'src/app/core/services/auth-state.service';
 import { PedidosService } from 'src/app/core/services/pedidos.service';
@@ -40,10 +41,14 @@ export class PedidosComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private authState: AuthStateService,
-    private pedidosService: PedidosService
+    private pedidosService: PedidosService,
+    private dialog: MatDialog
   ) {
     this.direccionForm.valueChanges.subscribe(() => (this.guardado = false));
   }
+
+  @ViewChild('direccionFormTemplate') direccionFormTemplate!: TemplateRef<any>;
+  private dialogRef?: MatDialogRef<any>;
 
   ngOnInit(): void {
     this.usuario = this.authState.usuario;
@@ -78,6 +83,19 @@ export class PedidosComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.suscripcion?.unsubscribe();
+  }
+
+  abrirEditarDireccion(): void {
+    if (!this.direccionFormTemplate) return;
+    this.dialogRef = this.dialog.open(this.direccionFormTemplate, {
+      width: '560px',
+      maxHeight: '80vh',
+      panelClass: 'direccion-dialog'
+    });
+  }
+
+  closeDialog(): void {
+    this.dialogRef?.close();
   }
 
   get totalInvertido(): number {
@@ -162,6 +180,8 @@ export class PedidosComponent implements OnInit, OnDestroy {
         this.direccion = direccion;
         this.guardado = true;
         this.cargandoDireccion = false;
+        // si el formulario está dentro de un diálogo, cerrarlo al guardar
+        this.dialogRef?.close();
       },
       error: () => {
         this.errorDireccion = 'No pudimos guardar la dirección. Intenta nuevamente.';

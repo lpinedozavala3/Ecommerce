@@ -66,8 +66,16 @@
         <div class="direcciones">
           <mat-card class="direccion-resumen" appearance="outlined" *ngIf="direccion">
             <header>
-              <span class="chip" *ngIf="direccion.esPrincipal">Principal</span>
-              <p class="actualizada">Actualizada {{ formatFecha(direccion.actualizadoEn || direccion.creadoEn) }}</p>
+              <div>
+                <span class="chip" *ngIf="direccion.esPrincipal">Principal</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.75rem;">
+                <p class="actualizada">Actualizada {{ formatFecha(direccion.actualizadoEn || direccion.creadoEn) }}</p>
+                <button mat-stroked-button color="primary" (click)="abrirEditarDireccion()" aria-label="Editar dirección">
+                  <mat-icon>edit</mat-icon>
+                  Editar
+                </button>
+              </div>
             </header>
             <ul>
               <li>{{ direccion.calle }} <span *ngIf="direccion.numero">#{{ direccion.numero }}</span></li>
@@ -79,82 +87,93 @@
             </ul>
           </mat-card>
 
-          <mat-card class="direcciones__form" appearance="outlined">
-            <h3>Editar dirección principal</h3>
-            <form [formGroup]="direccionForm" (ngSubmit)="guardarDireccion()" novalidate>
-              <mat-form-field appearance="outline">
-                <mat-label>Calle</mat-label>
-                <input matInput formControlName="calle" />
-                <mat-error *ngIf="direccionForm.controls.calle.touched && direccionForm.controls.calle.invalid">
-                  Ingresa una calle válida.
-                </mat-error>
-              </mat-form-field>
-
-              <div class="inline-fields">
-                <mat-form-field appearance="outline">
-                  <mat-label>Número</mat-label>
-                  <input matInput formControlName="numero" />
+          <ng-template #direccionFormTemplate>
+            <mat-card class="direcciones__form" appearance="outlined">
+              <h3>Editar dirección principal</h3>
+              <form [formGroup]="direccionForm" (ngSubmit)="guardarDireccion()" novalidate>
+                <mat-form-field appearance="outline" class="full">
+                  <mat-label>Calle</mat-label>
+                  <input matInput formControlName="calle" />
+                  <mat-error *ngIf="direccionForm.controls.calle.touched && direccionForm.controls.calle.invalid">
+                    Ingresa una calle válida.
+                  </mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline">
-                  <mat-label>Depto / Oficina</mat-label>
-                  <input matInput formControlName="depto" />
+                <div class="inline-fields">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Número</mat-label>
+                    <input matInput formControlName="numero" />
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Depto / Oficina</mat-label>
+                    <input matInput formControlName="depto" />
+                  </mat-form-field>
+                </div>
+
+                <div class="inline-fields">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Comuna</mat-label>
+                    <input matInput formControlName="comuna" />
+                    <mat-error *ngIf="direccionForm.controls.comuna.touched && direccionForm.controls.comuna.invalid">
+                      Campo obligatorio.
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Ciudad</mat-label>
+                    <input matInput formControlName="ciudad" />
+                    <mat-error *ngIf="direccionForm.controls.ciudad.touched && direccionForm.controls.ciudad.invalid">
+                      Campo obligatorio.
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="inline-fields">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Región</mat-label>
+                    <input matInput formControlName="region" />
+                    <mat-error *ngIf="direccionForm.controls.region.touched && direccionForm.controls.region.invalid">
+                      Campo obligatorio.
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>País</mat-label>
+                    <input matInput formControlName="pais" />
+                    <mat-error *ngIf="direccionForm.controls.pais.touched && direccionForm.controls.pais.invalid">
+                      Campo obligatorio.
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <mat-form-field appearance="outline" style="width:40%">
+                  <mat-label>Código postal</mat-label>
+                  <input matInput formControlName="codigoPostal" />
                 </mat-form-field>
-              </div>
 
-              <mat-form-field appearance="outline">
-                <mat-label>Comuna</mat-label>
-                <input matInput formControlName="comuna" />
-                <mat-error *ngIf="direccionForm.controls.comuna.touched && direccionForm.controls.comuna.invalid">
-                  Campo obligatorio.
-                </mat-error>
-              </mat-form-field>
+                <mat-form-field appearance="outline" class="full">
+                  <mat-label>Referencias</mat-label>
+                  <textarea matInput formControlName="referencias" rows="2"></textarea>
+                </mat-form-field>
 
-              <mat-form-field appearance="outline">
-                <mat-label>Ciudad</mat-label>
-                <input matInput formControlName="ciudad" />
-                <mat-error *ngIf="direccionForm.controls.ciudad.touched && direccionForm.controls.ciudad.invalid">
-                  Campo obligatorio.
-                </mat-error>
-              </mat-form-field>
+                <div style="display:flex;align-items:center;gap:1rem;">
+                  <button mat-flat-button color="primary" type="submit" [disabled]="cargandoDireccion">
+                    <mat-progress-spinner *ngIf="cargandoDireccion" diameter="18" mode="indeterminate" color="primary"></mat-progress-spinner>
+                    <span *ngIf="!cargandoDireccion">Guardar cambios</span>
+                  </button>
+                  <button mat-stroked-button type="button" (click)="closeDialog()">Cancelar</button>
+                </div>
 
-              <mat-form-field appearance="outline">
-                <mat-label>Región</mat-label>
-                <input matInput formControlName="region" />
-                <mat-error *ngIf="direccionForm.controls.region.touched && direccionForm.controls.region.invalid">
-                  Campo obligatorio.
-                </mat-error>
-              </mat-form-field>
+                <mat-card *ngIf="guardado" class="feedback" appearance="outlined">
+                  <mat-icon>check_circle</mat-icon>
+                  <span>Dirección guardada correctamente.</span>
+                </mat-card>
+              </form>
+            </mat-card>
+          </ng-template>
 
-              <mat-form-field appearance="outline">
-                <mat-label>País</mat-label>
-                <input matInput formControlName="pais" />
-                <mat-error *ngIf="direccionForm.controls.pais.touched && direccionForm.controls.pais.invalid">
-                  Campo obligatorio.
-                </mat-error>
-              </mat-form-field>
-
-              <mat-form-field appearance="outline">
-                <mat-label>Código postal</mat-label>
-                <input matInput formControlName="codigoPostal" />
-              </mat-form-field>
-
-              <mat-form-field appearance="outline">
-                <mat-label>Referencias</mat-label>
-                <textarea matInput formControlName="referencias" rows="3"></textarea>
-              </mat-form-field>
-
-              <button mat-flat-button color="primary" type="submit" [disabled]="cargandoDireccion">
-                <mat-progress-spinner *ngIf="cargandoDireccion" diameter="18" mode="indeterminate" color="primary"></mat-progress-spinner>
-                <span *ngIf="!cargandoDireccion">Guardar cambios</span>
-              </button>
-
-              <mat-card *ngIf="guardado" class="feedback" appearance="outlined">
-                <mat-icon>check_circle</mat-icon>
-                <span>Dirección guardada correctamente.</span>
-              </mat-card>
-            </form>
-          </mat-card>
+          <!-- El formulario de edición ahora se muestra sólo en el modal; eliminamos la versión inline -->
         </div>
       </mat-tab>
     </mat-tab-group>

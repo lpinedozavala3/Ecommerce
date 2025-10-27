@@ -1,17 +1,35 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Database.Models;
 using EccomerceAPI.Contracts.Pedidos;
 using EccomerceAPI.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace EccomerceAPI.Services
 {
     public sealed class PedidosService : IPedidosService
     {
         private readonly contextApp _db;
-
+        private static readonly Expression<Func<DireccionCliente, DireccionClienteDto>> DireccionProjection =
+            d => new DireccionClienteDto
+            {
+                IdDireccion   = d.IdDireccion,
+                ClienteId     = d.IdCliente,
+                Calle         = d.Calle,
+                Numero        = d.Numero,
+                Depto         = d.Depto,
+                Comuna        = d.Comuna,
+                Ciudad        = d.Ciudad,
+                Region        = d.Region,
+                Pais          = d.Pais,
+                CodigoPostal  = d.CodigoPostal,
+                Referencias   = d.Referencias,
+                EsPrincipal   = d.EsPrincipal,
+                CreadoEn      = d.CreadoEn,
+                ActualizadoEn = d.ActualizadoEn
+            };
         public PedidosService(contextApp db)
         {
             _db = db;
@@ -54,7 +72,7 @@ namespace EccomerceAPI.Services
             return await _db.DireccionClientes
                 .AsNoTracking()
                 .Where(d => d.IdCliente == clienteId && d.IdClienteNavigation.IdTienda == tiendaId)
-                .Select(MapDireccion)
+                .Select(DireccionProjection)
                 .FirstOrDefaultAsync();
         }
 

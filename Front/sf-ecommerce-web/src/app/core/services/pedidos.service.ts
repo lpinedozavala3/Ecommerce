@@ -1,6 +1,7 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
 import { DireccionCliente, PedidoResumen, UpsertDireccionPayload } from '../models/pedidos';
@@ -20,7 +21,7 @@ export class PedidosService {
     const params = new HttpParams().set('clienteId', clienteId);
     return this.http
       .get<DireccionCliente>(`${this.baseUrl}/direccion`, { params, observe: 'response' })
-      .pipe(map(resp => resp.body ?? null));
+      .pipe(map((resp: HttpResponse<DireccionCliente>) => resp.body ?? null));
   }
 
   guardarDireccion(clienteId: string, payload: UpsertDireccionPayload): Observable<DireccionCliente> {
