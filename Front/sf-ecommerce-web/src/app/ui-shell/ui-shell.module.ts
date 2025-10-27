@@ -11,9 +11,9 @@ import { FooterComponent } from './components/footer/footer.component';
 import { InicioComponent } from '../features/inicio/pages/inicio/inicio.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatChipsModule } from '@angular/material/chips';
 import { MatCardModule } from '@angular/material/card';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   declarations: [
@@ -29,8 +29,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatBadgeModule,
     MatFormFieldModule,
     MatInputModule,
-    MatChipsModule,
     MatCardModule,
+    MatMenuModule,
     ReactiveFormsModule
 ],
   exports: [

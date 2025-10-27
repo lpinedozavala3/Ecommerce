@@ -67,25 +67,39 @@
     </div>
   </div>
 
-  <div class="app-header__bottom" *ngIf="categorias.length">
+  <div class="app-header__bottom">
     <nav class="primary-nav">
       <a routerLink="/inicio" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
+
+      <button
+        mat-button
+        type="button"
+        class="nav-link"
+        [matMenuTriggerFor]="catalogoMenu"
+        [disabled]="!categorias.length"
+      >
+        Catálogo
+        <mat-icon>expand_more</mat-icon>
+      </button>
+
       <a routerLink="/novedades" routerLinkActive="active">Novedades</a>
       <a routerLink="/contacto" routerLinkActive="active">Contacto</a>
     </nav>
-
-    <div class="category-scroller">
-      <span class="label">Categorías</span>
-      <div class="chips">
-        <button
-          type="button"
-          *ngFor="let categoria of categorias"
-          (click)="navegarCategoria(categoria)"
-          [class.is-active]="selectedCategoriaId === categoria.idCategoria"
-        >
-          {{ categoria.nombreCategoria }}
-        </button>
-      </div>
-    </div>
   </div>
+
+  <mat-menu #catalogoMenu="matMenu" class="catalogo-menu" xPosition="after" yPosition="below">
+    <button mat-menu-item type="button" (click)="verCatalogo()" [class.is-active]="!selectedCategoriaId">
+      <mat-icon>grid_view</mat-icon>
+      <span>Ver todo</span>
+    </button>
+    <button
+      mat-menu-item
+      type="button"
+      *ngFor="let categoria of categorias"
+      (click)="navegarCategoria(categoria)"
+      [class.is-active]="selectedCategoriaId === categoria.idCategoria"
+    >
+      {{ categoria.nombreCategoria }}
+    </button>
+  </mat-menu>
 </header>

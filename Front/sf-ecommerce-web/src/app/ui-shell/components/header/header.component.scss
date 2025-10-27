@@ -107,24 +107,35 @@
   .app-header__bottom {
     border-top: 1px solid rgba(15, 23, 42, 0.05);
     padding: 0.75rem 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
     width: min(1100px, 92vw);
     margin: 0 auto;
   }
 
   .primary-nav {
     display: inline-flex;
+    align-items: center;
     gap: 1.25rem;
     font-weight: 600;
     color: var(--app-text-soft);
 
-    a {
+    a,
+    .nav-link {
       position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
       padding-bottom: 0.35rem;
       transition: color 0.2s ease;
+      text-transform: none;
 
+      mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    a {
       &.active,
       &:hover {
         color: var(--app-primary);
@@ -141,51 +152,35 @@
         background: var(--app-primary);
       }
     }
+
+    .nav-link {
+      color: var(--app-text-soft);
+      background: transparent;
+      border-radius: 999px;
+
+      &:hover,
+      &:focus-visible {
+        color: var(--app-primary);
+        background: rgba(59, 130, 246, 0.08);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
   }
 
-  .category-scroller {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    overflow-x: auto;
-    padding-bottom: 0.25rem;
+  :host ::ng-deep .catalogo-menu {
+    padding: 0.5rem 0;
 
-    .label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      color: var(--app-text-soft);
-      flex-shrink: 0;
+    .mat-menu-item.is-active {
+      color: var(--app-primary);
+      font-weight: 600;
     }
 
-    .chips {
-      display: inline-flex;
-      gap: 0.5rem;
-      flex-wrap: nowrap;
-    }
-
-    button {
-      border: none;
-      border-radius: 999px;
-      padding: 0.35rem 1rem;
-      background: rgba(148, 163, 184, 0.15);
-      color: var(--app-text-primary);
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
-      white-space: nowrap;
-
-      &:hover {
-        transform: translateY(-1px);
-        background: rgba(59, 130, 246, 0.18);
-        color: var(--app-primary);
-      }
-
-      &.is-active {
-        background: var(--app-primary);
-        color: #ffffff;
-        box-shadow: 0 6px 14px rgba(59, 130, 246, 0.25);
-      }
+    .mat-menu-item mat-icon {
+      color: var(--app-primary);
     }
   }
 
@@ -208,10 +203,6 @@
     .primary-nav {
       justify-content: center;
       flex-wrap: wrap;
-    }
-
-    .category-scroller {
-      justify-content: center;
     }
   }
 }

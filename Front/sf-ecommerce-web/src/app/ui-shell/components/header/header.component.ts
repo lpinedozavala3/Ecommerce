@@ -60,9 +60,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   submitSearch(): void {
-    const term = this.searchControl.value.trim();
-    this.router.navigate(['/inicio'], {
-      queryParams: { q: term || null, page: 1 },
+    const term = (this.searchControl.value || '').trim();
+    this.router.navigate(['/catalogo'], {
+      queryParams: {
+        q: term || null,
+        categoria: this.selectedCategoriaId || null,
+        page: 1
+      },
       queryParamsHandling: 'merge'
     });
   }
@@ -70,16 +74,36 @@ export class HeaderComponent implements OnInit, OnDestroy {
   clearSearch(event: MouseEvent): void {
     event.preventDefault();
     this.searchControl.setValue('');
-    this.router.navigate(['/inicio'], {
-      queryParams: { q: null, page: 1 },
+    this.router.navigate(['/catalogo'], {
+      queryParams: {
+        q: null,
+        categoria: this.selectedCategoriaId || null,
+        page: 1
+      },
       queryParamsHandling: 'merge'
     });
   }
 
   navegarCategoria(cat: Categoria): void {
-    this.router.navigate(['/inicio'], {
-      queryParams: { categoria: cat.idCategoria, page: 1 },
+    const term = (this.searchControl.value || '').trim();
+    this.router.navigate(['/catalogo'], {
+      queryParams: {
+        categoria: cat.idCategoria,
+        q: term || null,
+        page: 1
+      },
       queryParamsHandling: 'merge'
+    });
+  }
+
+  verCatalogo(): void {
+    const term = (this.searchControl.value || '').trim();
+    this.router.navigate(['/catalogo'], {
+      queryParams: {
+        q: term || null,
+        categoria: null,
+        page: 1
+      }
     });
   }
 
