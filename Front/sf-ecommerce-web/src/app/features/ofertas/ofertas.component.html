@@ -1,4 +1,56 @@
-<section class="placeholder container">
-  <h1>Ofertas especiales</h1>
-  <p>Estamos preparando las mejores promociones para ti. Muy pronto encontrarás ofertas increíbles en esta sección.</p>
+<section class="ofertas">
+  <header class="ofertas__hero">
+    <div>
+      <p class="eyebrow">Ofertas</p>
+      <h1>Promociones y packs pensados para ti</h1>
+      <p>Aprovecha descuentos temporales, preventas y beneficios exclusivos para nuestra comunidad. Todo diseñado con una estética minimalista y clara para tu próxima campaña.</p>
+    </div>
+    <a mat-stroked-button color="primary" routerLink="/novedades">
+      Ver novedades
+      <mat-icon>chevron_right</mat-icon>
+    </a>
+  </header>
+
+  <section class="ofertas__destacados">
+    <mat-card *ngFor="let oferta of destacados" [attr.data-theme]="oferta.tema" appearance="outlined">
+      <div class="badge">{{ oferta.etiqueta }}</div>
+      <h2>{{ oferta.titulo }}</h2>
+      <p>{{ oferta.descripcion }}</p>
+      <span class="saving">{{ oferta.ahorro }}</span>
+      <button mat-flat-button color="primary">Ver detalles</button>
+    </mat-card>
+  </section>
+
+  <section class="ofertas__beneficios">
+    <h3>Beneficios incluidos en todas tus compras</h3>
+    <div class="grid">
+      <mat-card *ngFor="let beneficio of beneficios" appearance="outlined">
+        <mat-icon>{{ beneficio.icono }}</mat-icon>
+        <div>
+          <strong>{{ beneficio.titulo }}</strong>
+          <span>{{ beneficio.descripcion }}</span>
+        </div>
+      </mat-card>
+    </div>
+  </section>
+
+  <section class="ofertas__cupones">
+    <h3>Códigos activos</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Descripción</th>
+          <th>Vigencia</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cupon of cupones">
+          <td><code>{{ cupon.codigo }}</code></td>
+          <td>{{ cupon.descripcion }}</td>
+          <td>{{ cupon.vigencia }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
 </section>

@@ -9,9 +9,11 @@ import { AppShellComponent } from './components/app-shell/app-shell.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { InicioComponent } from '../features/inicio/pages/inicio/inicio.component';
-import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatChipsModule } from "@angular/material/chips";
-import { MatCardModule } from "@angular/material/card";
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatCardModule } from '@angular/material/card';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   declarations: [
@@ -26,8 +28,10 @@ import { MatCardModule } from "@angular/material/card";
     MatButtonModule,
     MatBadgeModule,
     MatFormFieldModule,
-    MatChipsModule,
-    MatCardModule
+    MatInputModule,
+    MatCardModule,
+    MatMenuModule,
+    ReactiveFormsModule
 ],
   exports: [
     AppShellComponent   // ✅ esto permite usar <app-app-shell> fuera del módulo

@@ -1,34 +1,105 @@
-<header class="topbar">
-  <a class="brand" routerLink="/inicio">
-    <mat-icon>storefront</mat-icon>
-    Mi Tienda
-  </a>
-
-  <nav class="menu">
-    <a routerLink="/inicio" routerLinkActive="active">Tienda</a>
-    <a routerLink="/ofertas" routerLinkActive="active">Ofertas</a>
-    <a routerLink="/novedades" routerLinkActive="active">Novedades</a>
-    <a routerLink="/contacto" routerLinkActive="active">Contacto</a>
-  </nav>
-
-  <div class="actions">
-    <a class="cart" routerLink="/carrito" [matBadge]="itemsEnCarrito" [matBadgeHidden]="!itemsEnCarrito" matBadgeColor="accent">
-      <mat-icon>shopping_cart</mat-icon>
+<header class="app-header">
+  <div class="app-header__top">
+    <a class="brand" routerLink="/inicio">
+      <span class="brand__icon">
+        <mat-icon>storefront</mat-icon>
+      </span>
+      <span class="brand__copy">
+        <strong>Mi Tienda</strong>
+        <small>Tienda minimalista</small>
+      </span>
     </a>
 
-    <ng-container *ngIf="usuario; else login">
-      <span class="user">Hola, {{ usuario.nombreCompleto }}</span>
-      <button mat-stroked-button color="primary" (click)="cerrarSesion()">
-        <mat-icon>logout</mat-icon>
-        Salir
-      </button>
-    </ng-container>
+    <form class="search" (ngSubmit)="submitSearch()">
+      <mat-form-field appearance="outline">
+        <mat-icon matPrefix>search</mat-icon>
+        <mat-label>Buscar productos</mat-label>
+        <input matInput [formControl]="searchControl" placeholder="Auriculares, mouse, regalos…" />
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          *ngIf="searchControl.value"
+          (click)="clearSearch($event)"
+          aria-label="Limpiar búsqueda"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </form>
 
-    <ng-template #login>
-      <a mat-flat-button color="primary" routerLink="/auth/login">
-        <mat-icon>person</mat-icon>
-        Ingresar
+    <div class="app-header__actions">
+      <a class="action-link" mat-stroked-button color="primary" routerLink="/pedidos">
+        <mat-icon>receipt_long</mat-icon>
+        Mis pedidos
       </a>
-    </ng-template>
+
+      <button
+        mat-icon-button
+        class="cart"
+        type="button"
+        (click)="irAlCarrito()"
+        [matBadge]="itemsEnCarrito"
+        [matBadgeHidden]="!itemsEnCarrito"
+        matBadgeColor="accent"
+        aria-label="Ver carrito"
+      >
+        <mat-icon>shopping_bag</mat-icon>
+      </button>
+
+      <ng-container *ngIf="usuario; else login">
+        <div class="user-block">
+          <span class="user-greeting">Hola,</span>
+          <span class="user-name">{{ usuario.nombreCompleto }}</span>
+          <button mat-stroked-button color="primary" (click)="cerrarSesion()">
+            <mat-icon>logout</mat-icon>
+            Salir
+          </button>
+        </div>
+      </ng-container>
+
+      <ng-template #login>
+        <a mat-flat-button color="primary" routerLink="/auth/login">
+          <mat-icon>person</mat-icon>
+          Ingresar
+        </a>
+      </ng-template>
+    </div>
   </div>
+
+  <div class="app-header__bottom">
+    <nav class="primary-nav">
+      <a routerLink="/inicio" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
+
+      <button
+        mat-button
+        type="button"
+        class="nav-link"
+        [matMenuTriggerFor]="catalogoMenu"
+        [disabled]="!categorias.length"
+      >
+        Catálogo
+        <mat-icon>expand_more</mat-icon>
+      </button>
+
+      <a routerLink="/novedades" routerLinkActive="active">Novedades</a>
+      <a routerLink="/contacto" routerLinkActive="active">Contacto</a>
+    </nav>
+  </div>
+
+  <mat-menu #catalogoMenu="matMenu" class="catalogo-menu" xPosition="after" yPosition="below">
+    <button mat-menu-item type="button" (click)="verCatalogo()" [class.is-active]="!selectedCategoriaId">
+      <mat-icon>grid_view</mat-icon>
+      <span>Ver todo</span>
+    </button>
+    <button
+      mat-menu-item
+      type="button"
+      *ngFor="let categoria of categorias"
+      (click)="navegarCategoria(categoria)"
+      [class.is-active]="selectedCategoriaId === categoria.idCategoria"
+    >
+      {{ categoria.nombreCategoria }}
+    </button>
+  </mat-menu>
 </header>

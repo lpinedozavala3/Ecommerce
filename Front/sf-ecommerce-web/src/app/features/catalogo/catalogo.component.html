@@ -1,4 +1,149 @@
-<section class="placeholder container">
-  <h1>Catálogo en construcción</h1>
-  <p>Muy pronto podrás navegar por todo nuestro catálogo desde esta vista. Mientras tanto, explora los productos destacados en la página principal.</p>
+<section class="catalogo-page">
+  <header class="page-header">
+    <p class="eyebrow">Catálogo</p>
+    <h1>Explora todos los productos</h1>
+    <p class="lead">Encuentra accesorios, tecnología y mucho más en un solo lugar.</p>
+  </header>
+
+  <section class="filters-card">
+    <form class="filters-form" (ngSubmit)="$event.preventDefault()">
+      <mat-form-field appearance="outline">
+        <mat-label>Buscar productos</mat-label>
+        <input matInput [formControl]="searchControl" placeholder="Escribe un producto, marca o categoría" />
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          aria-label="Limpiar búsqueda"
+          *ngIf="searchTerm"
+          (click)="clearSearchField()"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Categoría</mat-label>
+        <mat-select [formControl]="categoriaControl" placeholder="Todas las categorías">
+          <mat-option [value]="null">Todas las categorías</mat-option>
+          <mat-option *ngFor="let categoria of categorias" [value]="categoria.idCategoria">
+            {{ categoria.nombreCategoria }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button
+        mat-stroked-button
+        color="primary"
+        type="button"
+        class="clear-filters"
+        *ngIf="hasActiveFilters"
+        (click)="clearFilters()"
+      >
+        <mat-icon>filter_alt_off</mat-icon>
+        Limpiar filtros
+      </button>
+    </form>
+
+    <div class="filters-summary">
+      <span *ngIf="!loadingProductos && page.totalElements">
+        Mostrando {{ showingRangeStart }}-{{ showingRangeEnd }} de {{ page.totalElements }} productos
+      </span>
+      <span *ngIf="!loadingProductos && !page.totalElements && hasActiveFilters">
+        Ajusta los criterios o limpia los filtros para ver más resultados.
+      </span>
+      <span *ngIf="!loadingProductos && !page.totalElements && !hasActiveFilters">
+        Aún no hay productos disponibles en el catálogo.
+      </span>
+    </div>
+
+    <div class="active-filters" *ngIf="hasActiveFilters">
+      <span *ngIf="searchTerm">Búsqueda: «{{ searchTerm }}»</span>
+      <span *ngIf="categoriaSeleccionadaNombre">Categoría: {{ categoriaSeleccionadaNombre }}</span>
+    </div>
+  </section>
+
+  <section class="results-section">
+    <div class="catalogo-grid" *ngIf="!loadingProductos && productos.length; else catalogoStates">
+      <mat-card class="producto-card" *ngFor="let producto of productos" appearance="outlined">
+        <div class="image-wrap">
+          <button type="button" class="image-btn" (click)="verDetalle(producto)">
+            <img
+              *ngIf="producto.imagenBase64; else noImg"
+              [src]="'data:image/png;base64,' + producto.imagenBase64"
+              [alt]="producto.nombrePublico || 'Producto'"
+              loading="lazy"
+            />
+          </button>
+
+          <ng-template #noImg>
+            <button type="button" class="image-btn" (click)="verDetalle(producto)">
+              <div class="img-fallback">
+                <mat-icon>image</mat-icon>
+              </div>
+            </button>
+          </ng-template>
+
+          <span class="badge" *ngIf="producto.destacado">Destacado</span>
+          <span class="badge neutral" *ngIf="producto.novedad">Nuevo</span>
+          <span class="badge danger" *ngIf="producto.stock <= 0">Sin stock</span>
+        </div>
+
+        <mat-card-content class="content">
+          <button
+            type="button"
+            class="title"
+            (click)="verDetalle(producto)"
+            [matTooltip]="producto.nombrePublico || 'Producto'"
+          >
+            {{ producto.nombrePublico || 'Producto' }}
+          </button>
+
+          <div class="meta">
+            <span class="cat">{{ getPrimaryCategoria(producto) || '—' }}</span>
+          </div>
+
+          <div class="price">
+            {{ producto.precio | currency:'CLP':'symbol-narrow':'1.0-0' }}
+          </div>
+
+          <div class="actions">
+            <button
+              mat-flat-button
+              color="primary"
+              (click)="agregar(producto)"
+              [disabled]="producto.stock <= 0"
+            >
+              <mat-icon>add_shopping_cart</mat-icon>
+              {{ producto.stock > 0 ? 'Agregar' : 'Sin stock' }}
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </section>
+
+  <ng-template #catalogoStates>
+    <div class="catalogo-loading" *ngIf="loadingProductos">
+      <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
+      <span>Cargando productos…</span>
+    </div>
+
+    <div class="catalogo-empty" *ngIf="!loadingProductos">
+      <p>No encontramos productos que coincidan con tu búsqueda.</p>
+      <button mat-stroked-button color="primary" type="button" (click)="clearFilters()" *ngIf="hasActiveFilters">
+        Limpiar filtros
+      </button>
+    </div>
+  </ng-template>
+
+  <div class="paginator-row" *ngIf="page.totalElements > page.pageSize">
+    <mat-paginator
+      [length]="page.totalElements"
+      [pageIndex]="page.pageNumber"
+      [pageSize]="page.pageSize"
+      [pageSizeOptions]="[8, 12, 16, 24]"
+      (page)="onPageChange($event)"
+    ></mat-paginator>
+  </div>
 </section>

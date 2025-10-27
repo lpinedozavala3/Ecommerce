@@ -1,25 +1,192 @@
-.container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 3rem 1.5rem;
+:host {
+  display: block;
 }
 
-.placeholder {
-  background: #eff6ff;
-  border-radius: 16px;
-  padding: 3rem 2rem;
-  text-align: center;
+.novedades {
+  width: min(1100px, 92vw);
+  margin: clamp(3rem, 6vw, 4rem) auto clamp(4rem, 6vw, 5rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2rem, 4vw, 3rem);
 
-  h1 {
-    margin: 0 0 1rem;
-    font-size: clamp(2rem, 2vw + 1.4rem, 2.4rem);
-    color: #1d4ed8;
+  .novedades__hero {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2rem;
+
+    .eyebrow {
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      color: var(--app-text-soft);
+      margin-bottom: 0.6rem;
+    }
+
+    h1 {
+      margin: 0 0 1rem;
+      font-size: clamp(2rem, 3.5vw, 2.6rem);
+      line-height: 1.1;
+    }
+
+    p {
+      margin: 0;
+      color: var(--app-text-muted);
+      max-width: 540px;
+    }
+
+    button[mat-stroked-button] {
+      align-self: flex-start;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border-radius: 999px;
+    }
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      button[mat-stroked-button] {
+        align-self: stretch;
+        justify-content: center;
+      }
+    }
   }
 
-  p {
-    margin: 0;
-    color: #1e3a8a;
-    font-size: 1.05rem;
-    line-height: 1.6;
+  .novedades__grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+
+  .producto {
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+    }
+
+    .thumb {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      background: rgba(15, 23, 42, 0.05);
+
+      button {
+        all: unset;
+        display: grid;
+        place-items: center;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .thumb__fallback {
+        color: rgba(15, 23, 42, 0.35);
+      }
+
+      .badge {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        background: rgba(59, 130, 246, 0.18);
+        color: var(--app-primary);
+        border-radius: 999px;
+        padding: 0.2rem 0.75rem;
+        font-weight: 600;
+        font-size: 0.75rem;
+
+        &.danger {
+          left: auto;
+          right: 1rem;
+          background: rgba(239, 68, 68, 0.18);
+          color: #b91c1c;
+        }
+      }
+    }
+
+    mat-card-content {
+      display: grid;
+      gap: 0.75rem;
+      padding: 1.5rem;
+      flex: 1;
+    }
+
+    .title {
+      all: unset;
+      font-weight: 600;
+      line-height: 1.4;
+      cursor: pointer;
+    }
+
+    .meta {
+      color: var(--app-text-soft);
+      font-size: 0.9rem;
+    }
+
+    .price {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--app-text-primary);
+    }
+
+    button[mat-flat-button] {
+      justify-content: center;
+    }
+  }
+
+  .novedades__empty,
+  .novedades__skeleton {
+    text-align: center;
+    color: var(--app-text-soft);
+    padding: 3rem 0;
+  }
+
+  .novedades__skeleton {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+
+    .skeleton-card {
+      border-radius: 18px;
+      padding: 1.5rem;
+      background: rgba(148, 163, 184, 0.18);
+      display: grid;
+      gap: 0.75rem;
+    }
+  }
+
+  .novedades__paginator {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.6) 20%, rgba(255, 255, 255, 0) 40%);
+    transform: translateX(-100%);
+    animation: shimmer 1.6s infinite;
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
   }
 }
