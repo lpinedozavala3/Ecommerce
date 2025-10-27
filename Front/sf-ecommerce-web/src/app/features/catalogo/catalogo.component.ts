@@ -21,8 +21,8 @@ export class CatalogoComponent implements OnInit, OnDestroy {
   productos: Producto[] = [];
   categorias: Categoria[] = [];
 
-  searchControl = new FormControl<string>('');
-  categoriaControl = new FormControl<string | null>(null);
+  searchControl = new FormControl('');
+  categoriaControl = new FormControl(null);
 
   loadingProductos = false;
   page = new Page();
