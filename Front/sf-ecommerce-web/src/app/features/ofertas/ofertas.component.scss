@@ -1,0 +1,212 @@
+:host {
+  display: block;
+}
+
+.ofertas {
+  width: min(1100px, 92vw);
+  margin: clamp(3rem, 6vw, 4rem) auto clamp(4rem, 6vw, 5rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2.5rem, 4vw, 3.5rem);
+
+  .ofertas__hero {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2rem;
+
+    .eyebrow {
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      color: var(--app-text-soft);
+      margin-bottom: 0.6rem;
+    }
+
+    h1 {
+      margin: 0 0 1rem;
+      font-size: clamp(2rem, 3.5vw, 2.7rem);
+      line-height: 1.1;
+    }
+
+    p {
+      margin: 0;
+      color: var(--app-text-muted);
+      max-width: 560px;
+    }
+
+    a[mat-stroked-button] {
+      align-self: flex-start;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border-radius: 999px;
+    }
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      a[mat-stroked-button] {
+        align-self: stretch;
+        justify-content: center;
+      }
+    }
+  }
+
+  .ofertas__destacados {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+
+    mat-card {
+      position: relative;
+      border-radius: 22px;
+      overflow: hidden;
+      padding: 2rem;
+      display: grid;
+      gap: 1rem;
+      color: var(--app-text-primary);
+
+      &[data-theme='sunset'] {
+        background: linear-gradient(140deg, rgba(251, 191, 36, 0.18), rgba(248, 113, 113, 0.18));
+      }
+
+      &[data-theme='ocean'] {
+        background: linear-gradient(140deg, rgba(56, 189, 248, 0.18), rgba(14, 165, 233, 0.18));
+      }
+
+      &[data-theme='forest'] {
+        background: linear-gradient(140deg, rgba(74, 222, 128, 0.18), rgba(45, 212, 191, 0.18));
+      }
+
+      .badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        display: inline-block;
+        padding: 0.3rem 0.9rem;
+        border-radius: 999px;
+        background: rgba(15, 23, 42, 0.12);
+        width: max-content;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: 1.45rem;
+      }
+
+      p {
+        margin: 0;
+        color: var(--app-text-muted);
+      }
+
+      .saving {
+        font-weight: 600;
+        color: var(--app-accent);
+      }
+
+      button {
+        justify-self: start;
+        border-radius: 999px;
+      }
+    }
+  }
+
+  .ofertas__beneficios {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    h3 {
+      margin: 0;
+      font-size: 1.6rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.2rem;
+    }
+
+    mat-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.4rem;
+      border-radius: 18px;
+
+      mat-icon {
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+        color: var(--app-primary);
+      }
+
+      strong {
+        display: block;
+        margin-bottom: 0.3rem;
+      }
+
+      span {
+        color: var(--app-text-soft);
+        font-size: 0.95rem;
+      }
+    }
+  }
+
+  .ofertas__cupones {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    h3 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 14px 35px rgba(15, 23, 42, 0.05);
+    }
+
+    thead {
+      background: rgba(15, 23, 42, 0.05);
+
+      th {
+        text-align: left;
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+        color: var(--app-text-soft);
+        font-size: 0.95rem;
+      }
+    }
+
+    tbody {
+      tr {
+        border-bottom: 1px solid rgba(15, 23, 42, 0.05);
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        td {
+          padding: 1rem 1.5rem;
+          font-size: 0.95rem;
+          color: var(--app-text-muted);
+
+          code {
+            background: rgba(15, 23, 42, 0.08);
+            padding: 0.25rem 0.6rem;
+            border-radius: 8px;
+            font-weight: 600;
+            color: var(--app-text-primary);
+          }
+        }
+      }
+    }
+  }
+}

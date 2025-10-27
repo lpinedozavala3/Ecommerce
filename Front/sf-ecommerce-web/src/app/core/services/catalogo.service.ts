@@ -7,7 +7,7 @@ import { Page } from '../models/Page';
 import { PagedResponse } from '../models/Paged';
 import { ProductoFilter } from '../models/Filters/ProductoFilter';
 import { Categoria } from '../models/Categoria.';
-import { Producto } from '../models/producto';
+import { Producto, ProductoDetalle } from '../models/producto';
 
 @Injectable({ providedIn: 'root' })
 export class CatalogoService {
@@ -23,6 +23,7 @@ getDataByPage(filter: ProductoFilter, page: Page): Observable<PagedResponse<Prod
 
   if (filter?.searchText?.trim()) params = params.set('searchText', filter.searchText.trim());
   if (filter?.categoriaId)        params = params.set('categoriaId', filter.categoriaId);
+  if (filter?.esNovedad !== undefined) params = params.set('esNovedad', String(filter.esNovedad));
   return this.http.get<PagedResponse<Producto>>(
     `${this.REST_API_SERVER}/productos/list`,
     { params }
@@ -32,6 +33,10 @@ getDataByPage(filter: ProductoFilter, page: Page): Observable<PagedResponse<Prod
 
   obtenerCategorias(): Observable<Categoria[]> {
     return this.http.get<Categoria[]>(`${this.REST_API_SERVER}/categorias`);
+  }
+
+  obtenerDetalle(productoId: string): Observable<ProductoDetalle> {
+    return this.http.get<ProductoDetalle>(`${this.REST_API_SERVER}/productos/${productoId}`);
   }
 
   // (Opcional) compatibilidad si aún lo usas en otra vista

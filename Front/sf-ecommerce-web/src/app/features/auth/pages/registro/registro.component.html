@@ -1,0 +1,58 @@
+<div class="layout">
+  <a class="volver" routerLink="/inicio">
+    <mat-icon>arrow_back</mat-icon>
+    Volver a la tienda
+  </a>
+
+  <section class="card">
+    <header>
+      <h1>Crea tu cuenta</h1>
+      <p>Regístrate para comenzar a disfrutar de todos nuestros beneficios.</p>
+    </header>
+
+    <form [formGroup]="formulario" (ngSubmit)="submit()" novalidate>
+      <div class="grid">
+        <mat-form-field appearance="outline" class="field">
+          <mat-label>Nombre</mat-label>
+          <input matInput formControlName="nombre" placeholder="Tu nombre" />
+          <mat-error *ngIf="nombre?.hasError('required')">El nombre es obligatorio.</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="field">
+          <mat-label>Apellido</mat-label>
+          <input matInput formControlName="apellido" placeholder="Tu apellido" />
+          <mat-error *ngIf="apellido?.hasError('required')">El apellido es obligatorio.</mat-error>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="field">
+        <mat-label>Correo electrónico</mat-label>
+        <input matInput type="email" formControlName="email" placeholder="tu@email.com" />
+        <mat-error *ngIf="email?.hasError('required')">El correo es obligatorio.</mat-error>
+        <mat-error *ngIf="email?.hasError('email')">Introduce un correo válido.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="field">
+        <mat-label>Contraseña</mat-label>
+        <input matInput type="password" formControlName="password" placeholder="••••••" />
+        <mat-error *ngIf="password?.hasError('required')">La contraseña es obligatoria.</mat-error>
+        <mat-error *ngIf="password?.hasError('minlength')">Debe tener al menos 6 caracteres.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="field">
+        <mat-label>Teléfono (opcional)</mat-label>
+        <input matInput type="tel" formControlName="telefono" placeholder="+56 9 1234 5678" />
+      </mat-form-field>
+
+      <button mat-flat-button color="primary" type="submit" [disabled]="loading">
+        <mat-icon>person_add</mat-icon>
+        Crear cuenta
+      </button>
+    </form>
+
+    <footer>
+      <span>¿Ya tienes cuenta?</span>
+      <a routerLink="/auth/login">Inicia sesión</a>
+    </footer>
+  </section>
+</div>

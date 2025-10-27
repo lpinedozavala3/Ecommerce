@@ -1,1 +1,197 @@
-<p>pedidos works!</p>
+<ng-container *ngIf="estaAutenticado; else requiereLogin">
+  <section class="pedidos">
+    <header class="pedidos__hero">
+      <div>
+        <p class="eyebrow">Mi panel</p>
+        <h1>Resumen de tus pedidos</h1>
+        <p>Revisa el estado de tus compras y mantén actualizada tu dirección principal para futuros envíos.</p>
+      </div>
+      <div class="hero__stats">
+        <mat-card appearance="outlined">
+          <span class="label">Pedidos</span>
+          <strong>{{ pedidos.length }}</strong>
+        </mat-card>
+        <mat-card appearance="outlined">
+          <span class="label">Total invertido</span>
+          <strong>{{ totalInvertido | currency:'CLP':'symbol-narrow':'1.0-0' }}</strong>
+        </mat-card>
+      </div>
+    </header>
+
+    <mat-tab-group animationDuration="350ms">
+      <mat-tab label="Historial de pedidos">
+        <div class="alert" *ngIf="errorPedidos">{{ errorPedidos }}</div>
+
+        <div class="pedidos__lista" *ngIf="!cargandoPedidos && pedidos.length; else pedidosFallback">
+          <mat-card class="pedido" appearance="outlined" *ngFor="let pedido of pedidos">
+            <header>
+              <div>
+                <h2>#{{ pedido.codigo }}</h2>
+                <span class="fecha">{{ formatFecha(pedido.creadoEn) }}</span>
+              </div>
+              <span class="estado">{{ pedido.estado }}</span>
+            </header>
+            <div class="pedido__body">
+              <div class="pedido__items">
+                <div class="item" *ngFor="let item of pedido.items">
+                  <div>
+                    <strong>{{ item.nombre }}</strong>
+                    <span>Cantidad: {{ item.cantidad | number:'1.0-0' }}</span>
+                  </div>
+                  <span class="subtotal">{{ (item.subtotal + item.iva) | currency:'CLP':'symbol-narrow':'1.0-0' }}</span>
+                </div>
+              </div>
+              <div class="pedido__meta">
+                <div class="totales">
+                  <span>Subtotal {{ pedido.totalNeto | currency:'CLP':'symbol-narrow':'1.0-0' }}</span>
+                  <span>IVA {{ pedido.totalIva | currency:'CLP':'symbol-narrow':'1.0-0' }}</span>
+                </div>
+                <div class="total">Total pagado {{ pedido.total | currency:'CLP':'symbol-narrow':'1.0-0' }}</div>
+              </div>
+            </div>
+          </mat-card>
+        </div>
+
+        <ng-template #pedidosFallback>
+          <div class="pedidos__skeleton" *ngIf="cargandoPedidos">
+            <div class="skeleton-card" *ngFor="let _ of [].constructor(2)"></div>
+          </div>
+          <div class="pedidos__empty" *ngIf="!cargandoPedidos && !pedidos.length">Aún no registramos pedidos en tu cuenta.</div>
+        </ng-template>
+      </mat-tab>
+
+      <mat-tab label="Dirección de despacho">
+        <div class="alert" *ngIf="errorDireccion">{{ errorDireccion }}</div>
+
+        <div class="direcciones">
+          <mat-card class="direccion-resumen" appearance="outlined" *ngIf="direccion">
+            <header>
+              <div>
+                <span class="chip" *ngIf="direccion.esPrincipal">Principal</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.75rem;">
+                <p class="actualizada">Actualizada {{ formatFecha(direccion.actualizadoEn || direccion.creadoEn) }}</p>
+                <button mat-stroked-button color="primary" (click)="abrirEditarDireccion()" aria-label="Editar dirección">
+                  <mat-icon>edit</mat-icon>
+                  Editar
+                </button>
+              </div>
+            </header>
+            <ul>
+              <li>{{ direccion.calle }} <span *ngIf="direccion.numero">#{{ direccion.numero }}</span></li>
+              <li *ngIf="direccion.depto">{{ direccion.depto }}</li>
+              <li>{{ direccion.comuna }}, {{ direccion.ciudad }}</li>
+              <li>{{ direccion.region }}, {{ direccion.pais }}</li>
+              <li *ngIf="direccion.codigoPostal">{{ direccion.codigoPostal }}</li>
+              <li *ngIf="direccion.referencias">Referencia: {{ direccion.referencias }}</li>
+            </ul>
+          </mat-card>
+
+          <ng-template #direccionFormTemplate>
+            <mat-card class="direcciones__form" appearance="outlined">
+              <h3>Editar dirección principal</h3>
+              <form [formGroup]="direccionForm" (ngSubmit)="guardarDireccion()" novalidate>
+                <mat-form-field appearance="outline" class="full">
+                  <mat-label>Calle</mat-label>
+                  <input matInput formControlName="calle" />
+                  <mat-error *ngIf="direccionForm.controls.calle.touched && direccionForm.controls.calle.invalid">
+                    Ingresa una calle válida.
+                  </mat-error>
+                </mat-form-field>
+
+                <div class="inline-fields">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Número</mat-label>
+                    <input matInput formControlName="numero" />
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Depto / Oficina</mat-label>
+                    <input matInput formControlName="depto" />
+                  </mat-form-field>
+                </div>
+
+                <div class="inline-fields">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Comuna</mat-label>
+                    <input matInput formControlName="comuna" />
+                    <mat-error *ngIf="direccionForm.controls.comuna.touched && direccionForm.controls.comuna.invalid">
+                      Campo obligatorio.
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Ciudad</mat-label>
+                    <input matInput formControlName="ciudad" />
+                    <mat-error *ngIf="direccionForm.controls.ciudad.touched && direccionForm.controls.ciudad.invalid">
+                      Campo obligatorio.
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="inline-fields">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Región</mat-label>
+                    <input matInput formControlName="region" />
+                    <mat-error *ngIf="direccionForm.controls.region.touched && direccionForm.controls.region.invalid">
+                      Campo obligatorio.
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>País</mat-label>
+                    <input matInput formControlName="pais" />
+                    <mat-error *ngIf="direccionForm.controls.pais.touched && direccionForm.controls.pais.invalid">
+                      Campo obligatorio.
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <mat-form-field appearance="outline" style="width:40%">
+                  <mat-label>Código postal</mat-label>
+                  <input matInput formControlName="codigoPostal" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full">
+                  <mat-label>Referencias</mat-label>
+                  <textarea matInput formControlName="referencias" rows="2"></textarea>
+                </mat-form-field>
+
+                <div style="display:flex;align-items:center;gap:1rem;">
+                  <button mat-flat-button color="primary" type="submit" [disabled]="cargandoDireccion">
+                    <mat-progress-spinner *ngIf="cargandoDireccion" diameter="18" mode="indeterminate" color="primary"></mat-progress-spinner>
+                    <span *ngIf="!cargandoDireccion">Guardar cambios</span>
+                  </button>
+                  <button mat-stroked-button type="button" (click)="closeDialog()">Cancelar</button>
+                </div>
+
+                <mat-card *ngIf="guardado" class="feedback" appearance="outlined">
+                  <mat-icon>check_circle</mat-icon>
+                  <span>Dirección guardada correctamente.</span>
+                </mat-card>
+              </form>
+            </mat-card>
+          </ng-template>
+
+          <!-- El formulario de edición ahora se muestra sólo en el modal; eliminamos la versión inline -->
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </section>
+</ng-container>
+
+<ng-template #requiereLogin>
+  <section class="pedidos pedidos--restringido">
+    <header class="pedidos__hero">
+      <div>
+        <p class="eyebrow">Mi panel</p>
+        <h1>Inicia sesión para ver tus pedidos</h1>
+        <p>Necesitamos que te identifiques para mostrarte el historial de compras y tu dirección de despacho.</p>
+        <a mat-flat-button color="primary" routerLink="/auth/login">
+          <mat-icon>login</mat-icon>
+          Ir a iniciar sesión
+        </a>
+      </div>
+    </header>
+  </section>
+</ng-template>

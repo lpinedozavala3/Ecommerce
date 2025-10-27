@@ -1,6 +1,208 @@
-.topbar{display:flex;gap:16px;align-items:center;padding:10px 16px;border-bottom:1px solid #eee;background:#faf6ef;}
-.brand{font-weight:700;text-decoration:none;color:#333;}
-.menu a,.link{margin-right:12px;text-decoration:none;color:#333;}
-.menu a.on{font-weight:600;border-bottom:2px solid #333;}
-.menu .disabled{opacity:.5;pointer-events:none}
-.spacer{flex:1 1 auto;}
+:host {
+  display: block;
+}
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+  background: rgba(248, 250, 252, 0.92);
+  border-bottom: 1px solid var(--app-border);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.04);
+
+  .app-header__top {
+    width: min(1100px, 92vw);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1.5rem;
+    align-items: center;
+    padding: 1.1rem 0;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+    color: var(--app-text-primary);
+    font-weight: 700;
+
+    .brand__icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(140deg, rgba(59, 130, 246, 0.18), rgba(99, 102, 241, 0.25));
+      color: var(--app-primary);
+    }
+
+    .brand__copy {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+
+      strong {
+        font-size: 1.1rem;
+      }
+
+      small {
+        color: var(--app-text-soft);
+        font-weight: 500;
+      }
+    }
+  }
+
+  .search {
+    display: flex;
+
+    ::ng-deep .mat-mdc-text-field-wrapper {
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.85);
+    }
+
+    ::ng-deep .mat-mdc-form-field-flex {
+      padding-inline: 0.75rem 0.4rem;
+    }
+  }
+
+  .app-header__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    .action-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .cart {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--app-primary);
+    }
+
+    .user-block {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding-left: 0.75rem;
+      border-left: 1px solid var(--app-border);
+      color: var(--app-text-soft);
+
+      .user-name {
+        font-weight: 600;
+        color: var(--app-text-primary);
+      }
+
+      button[mat-stroked-button] {
+        gap: 0.3rem;
+        border-radius: 999px;
+        padding-inline: 1rem;
+      }
+    }
+  }
+
+  .app-header__bottom {
+    border-top: 1px solid rgba(15, 23, 42, 0.05);
+    padding: 0.75rem 0;
+    width: min(1100px, 92vw);
+    margin: 0 auto;
+  }
+
+  .primary-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.25rem;
+    font-weight: 600;
+    color: var(--app-text-soft);
+
+    a,
+    .nav-link {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding-bottom: 0.35rem;
+      transition: color 0.2s ease;
+      text-transform: none;
+
+      mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    a {
+      &.active,
+      &:hover {
+        color: var(--app-primary);
+      }
+
+      &.active::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -0.45rem;
+        height: 2px;
+        border-radius: 999px;
+        background: var(--app-primary);
+      }
+    }
+
+    .nav-link {
+      color: var(--app-text-soft);
+      background: transparent;
+      border-radius: 999px;
+
+      &:hover,
+      &:focus-visible {
+        color: var(--app-primary);
+        background: rgba(59, 130, 246, 0.08);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  :host ::ng-deep .catalogo-menu {
+    padding: 0.5rem 0;
+
+    .mat-menu-item.is-active {
+      color: var(--app-primary);
+      font-weight: 600;
+    }
+
+    .mat-menu-item mat-icon {
+      color: var(--app-primary);
+    }
+  }
+
+  @media (max-width: 960px) {
+    .app-header__top {
+      grid-template-columns: 1fr;
+      justify-items: stretch;
+      text-align: center;
+    }
+
+    .brand {
+      justify-content: center;
+    }
+
+    .app-header__actions {
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .primary-nav {
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+  }
+}

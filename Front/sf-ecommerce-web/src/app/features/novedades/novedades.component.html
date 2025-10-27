@@ -1,0 +1,74 @@
+<section class="novedades">
+  <div class="novedades__hero">
+    <div>
+      <p class="eyebrow">Novedades</p>
+      <h1>Recién llegados a la colección</h1>
+      <p>Estos productos acaban de llegar y están disponibles por tiempo limitado. Descubre lanzamientos frescos y curados por nuestro equipo.</p>
+    </div>
+    <button mat-stroked-button color="primary" routerLink="/inicio">
+      Ver catálogo completo
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+
+  <div class="novedades__grid" *ngIf="!loading && productos.length; else novedadesFallback">
+    <mat-card class="producto" appearance="outlined" *ngFor="let producto of productos">
+      <div class="thumb">
+        <button type="button" (click)="verDetalle(producto)">
+          <img
+            *ngIf="producto.imagenBase64; else noImagen"
+            [src]="'data:image/png;base64,' + producto.imagenBase64"
+            [alt]="producto.nombrePublico || 'Producto'"
+            loading="lazy"
+          />
+        </button>
+        <ng-template #noImagen>
+          <span class="thumb__fallback">
+            <mat-icon>image</mat-icon>
+          </span>
+        </ng-template>
+
+        <span class="badge">Nuevo</span>
+        <span class="badge danger" *ngIf="producto.stock <= 0">Agotado</span>
+      </div>
+
+      <mat-card-content>
+        <button type="button" class="title" (click)="verDetalle(producto)">
+          {{ producto.nombrePublico || 'Producto' }}
+        </button>
+        <div class="meta">{{ getPrimaryCategoria(producto) || 'General' }}</div>
+        <div class="price">{{ producto.precio | currency:'CLP':'symbol-narrow':'1.0-0' }}</div>
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="agregar(producto)"
+          [disabled]="producto.stock <= 0"
+        >
+          <mat-icon>add_shopping_cart</mat-icon>
+          {{ producto.stock > 0 ? 'Agregar al carro' : 'Sin stock' }}
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <ng-template #novedadesFallback>
+    <div class="novedades__empty" *ngIf="!loading">No tenemos novedades disponibles por ahora. Vuelve pronto.</div>
+    <div class="novedades__skeleton" *ngIf="loading">
+      <div class="skeleton-card" *ngFor="let _ of [].constructor(page.pageSize)">
+        <div class="sk-img shimmer"></div>
+        <div class="sk-line shimmer"></div>
+        <div class="sk-line short shimmer"></div>
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="novedades__paginator" *ngIf="page.totalElements > page.pageSize">
+    <mat-paginator
+      [length]="page.totalElements"
+      [pageIndex]="page.pageNumber"
+      [pageSize]="page.pageSize"
+      [pageSizeOptions]="[8, 12, 16, 24]"
+      (page)="onPageChange($event)"
+    ></mat-paginator>
+  </div>
+</section>

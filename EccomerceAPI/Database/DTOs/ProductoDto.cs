@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Database.DTOs
 {
-    public sealed class ProductoDto
+    public class ProductoDto
     {
         public Guid ProductoId { get; set; }
         public string? NombrePublico { get; set; }
@@ -15,6 +15,8 @@ namespace Database.DTOs
         public string? ImagenBase64 { get; set; }
         public bool VisibleEnTienda { get; set; }
         public bool? Destacado { get; set; }
+        public bool Exento { get; set; }
+        public bool Novedad { get; set; }
 
         public List<CategoriaDto> Categorias { get; set; } = new();
 

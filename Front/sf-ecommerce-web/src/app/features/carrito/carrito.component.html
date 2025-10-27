@@ -1,1 +1,102 @@
-<p>carrito works!</p>
+<section class="page container" *ngIf="items?.length; else vacio">
+  <header class="page-header">
+    <div>
+      <h1>Carrito de compras</h1>
+      <p>{{ items.length }} {{ items.length === 1 ? 'producto' : 'productos' }} en tu carrito.</p>
+    </div>
+    <button mat-stroked-button color="warn" (click)="limpiar()">
+      <mat-icon>delete_sweep</mat-icon>
+      Vaciar carrito
+    </button>
+  </header>
+
+  <div class="layout">
+    <mat-card class="items" appearance="outlined">
+      <mat-card-content>
+        <article class="item" *ngFor="let item of items; trackBy: trackById">
+          <div class="thumb" [ngClass]="{ 'sin-imagen': !item.imagenBase64 }">
+            <img *ngIf="item.imagenBase64" [src]="'data:image/png;base64,' + item.imagenBase64" [alt]="item.nombre" />
+            <mat-icon *ngIf="!item.imagenBase64">image</mat-icon>
+          </div>
+
+          <div class="info">
+            <h3>{{ item.nombre }}</h3>
+            <span class="categoria" *ngIf="item.categoria">{{ item.categoria }}</span>
+
+            <div class="acciones">
+              <label>Cantidad
+                <input type="number" min="1" [ngModel]="item.cantidad" (ngModelChange)="actualizarCantidad(item, $event)" />
+              </label>
+              <button mat-button color="warn" (click)="quitar(item)">
+                <mat-icon>close</mat-icon>
+                Quitar
+              </button>
+            </div>
+          </div>
+
+          <div class="precio">
+            <span class="monto">${{ (item.precioNeto + item.iva) * item.cantidad | number:'1.0-0' }}</span>
+            <small>
+              Neto: ${{ item.precioNeto * item.cantidad | number:'1.0-0' }}
+            </small>
+          </div>
+        </article>
+
+        <mat-progress-spinner *ngIf="cargando" mode="indeterminate" diameter="32"></mat-progress-spinner>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="resumen" appearance="outlined">
+      <mat-card-content>
+        <h2>Resumen del pedido</h2>
+
+        <div class="totales" *ngIf="resumen; else sinResumen">
+          <div class="row">
+            <span>Subtotal</span>
+            <strong>${{ resumen.subtotal | number:'1.0-0' }}</strong>
+          </div>
+          <div class="row">
+            <span>Impuestos</span>
+            <strong>${{ resumen.impuestos | number:'1.0-0' }}</strong>
+          </div>
+          <div class="row">
+            <span>Envío</span>
+            <strong>${{ resumen.envio | number:'1.0-0' }}</strong>
+          </div>
+          <mat-divider></mat-divider>
+          <div class="row total">
+            <span>Total</span>
+            <strong>${{ resumen.total | number:'1.0-0' }}</strong>
+          </div>
+
+          <ul class="alertas" *ngIf="mensajes.length">
+            <li *ngFor="let msg of mensajes">{{ msg }}</li>
+          </ul>
+
+          <button mat-flat-button color="primary" class="checkout" (click)="irAlCheckout()" [disabled]="cargando">
+            <mat-icon>payments</mat-icon>
+            Proceder al pago
+          </button>
+
+          <p class="nota">Los precios incluyen impuestos según corresponda. El envío puede variar al ingresar tu dirección.</p>
+        </div>
+
+        <ng-template #sinResumen>
+          <p class="nota">Actualizando resumen...</p>
+        </ng-template>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</section>
+
+<ng-template #vacio>
+  <div class="vacio container">
+    <mat-icon>shopping_bag</mat-icon>
+    <h2>Tu carrito está vacío</h2>
+    <p>Explora nuestra tienda y agrega tus productos favoritos.</p>
+    <button mat-flat-button color="primary" routerLink="/inicio">
+      <mat-icon>storefront</mat-icon>
+      Ir a la tienda
+    </button>
+  </div>
+</ng-template>

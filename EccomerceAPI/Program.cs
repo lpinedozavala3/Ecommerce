@@ -11,6 +11,7 @@ builder.Services.AddDbContext<contextApp>(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 // CORS
 const string CorsPolicy = "CorsPolicy";
@@ -32,12 +33,15 @@ builder.Services.AddSingleton<IUriService>(o =>
 });
 builder.Services.AddTransient<ITenantResolver, TenantResolver>();
 builder.Services.AddTransient<ICatalogoService, CatalogoService>();
-builder.Services.AddHttpContextAccessor(); // útil si TenantResolver lee headers/host
+builder.Services.AddTransient<IAuthService, AuthService>();
+builder.Services.AddTransient<IPedidosService, PedidosService>();
+builder.Services.AddHttpContextAccessor(); // Ãºtil si TenantResolver lee headers/host
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger();
     app.UseSwaggerUI();
 }
 

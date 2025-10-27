@@ -18,4 +18,14 @@ export interface Producto {
   visibleEnTienda: boolean;
   categorias?: Categoria[];
   destacado?: boolean;
+  exento?: boolean;
+  novedad?: boolean;
+}
+
+export interface ProductoDetalle extends Producto {
+  descripcionCorta?: string | null;
+  descripcionLarga?: string | null;
+  codigoBarra?: string | null;
+  unidadMedida?: string | null;
+  activo?: boolean;
 }

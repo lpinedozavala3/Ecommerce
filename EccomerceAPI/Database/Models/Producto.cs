@@ -27,6 +27,7 @@ namespace Database.Models
         public string? DescripcionLarga { get; set; }
         public string ImagenBase64 { get; set; } = null!;
         public int Stock { get; set; }
+        public bool Novedad { get; set; }
 
         public virtual Emisor Emisor { get; set; } = null!;
         public virtual ICollection<OrdenItem> OrdenItems { get; set; }
