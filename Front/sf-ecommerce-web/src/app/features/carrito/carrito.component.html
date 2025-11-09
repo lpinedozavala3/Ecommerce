@@ -94,7 +94,7 @@
     <mat-icon>shopping_bag</mat-icon>
     <h2>Tu carrito está vacío</h2>
     <p>Explora nuestra tienda y agrega tus productos favoritos.</p>
-    <button mat-flat-button color="primary" routerLink="/inicio">
+    <button mat-flat-button color="primary" [routerLink]="store.storeLink('inicio')">
       <mat-icon>storefront</mat-icon>
       Ir a la tienda
     </button>

@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   backend_server: "https://localhost:7141/api",
-  devTenantDomain: "simplefactura.com"
+  devTenantName: ""
 };
 
 /*

@@ -7,6 +7,7 @@ import { AuthStateService } from 'src/app/core/services/auth-state.service';
 import { PedidosService } from 'src/app/core/services/pedidos.service';
 import { DireccionCliente, PedidoResumen, UpsertDireccionPayload } from 'src/app/core/models/pedidos';
 import { UsuarioSesion } from 'src/app/core/models/auth';
+import { StoreContextService } from 'src/app/core/services/store-context.service';
 
 @Component({
   selector: 'app-pedidos',
@@ -42,7 +43,8 @@ export class PedidosComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private authState: AuthStateService,
     private pedidosService: PedidosService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    public store: StoreContextService
   ) {
     this.direccionForm.valueChanges.subscribe(() => (this.guardado = false));
   }

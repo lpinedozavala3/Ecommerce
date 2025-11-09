@@ -11,6 +11,7 @@ namespace Database.DTOs
         public Guid TiendaId { get; set; }
         public Guid EmisorId { get; set; }
         public string NombreComercial { get; set; } = string.Empty;
+        public string NombreFantasia { get; set; } = string.Empty;
         public string? Plantilla { get; set; }         // NombrePlantilla o TipoEstructura
         public string? BrandingJson { get; set; }      // JsonBranding
     }

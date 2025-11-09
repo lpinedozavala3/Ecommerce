@@ -1,6 +1,6 @@
 <header class="app-header">
   <div class="app-header__top">
-    <a class="brand" routerLink="/inicio">
+    <a class="brand" [routerLink]="store.storeLink('inicio')">
       <span class="brand__icon">
         <mat-icon>storefront</mat-icon>
       </span>
@@ -29,7 +29,7 @@
     </form>
 
     <div class="app-header__actions">
-      <a class="action-link" mat-stroked-button color="primary" routerLink="/pedidos">
+      <a class="action-link" mat-stroked-button color="primary" [routerLink]="store.storeLink('pedidos')">
         <mat-icon>receipt_long</mat-icon>
         Mis pedidos
       </a>
@@ -59,7 +59,7 @@
       </ng-container>
 
       <ng-template #login>
-        <a mat-flat-button color="primary" routerLink="/auth/login">
+        <a mat-flat-button color="primary" [routerLink]="store.storeLink('auth', 'login')">
           <mat-icon>person</mat-icon>
           Ingresar
         </a>
@@ -69,7 +69,7 @@
 
   <div class="app-header__bottom">
     <nav class="primary-nav">
-      <a routerLink="/inicio" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
+      <a [routerLink]="store.storeLink('inicio')" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
 
       <button
         mat-button
@@ -82,8 +82,8 @@
         <mat-icon>expand_more</mat-icon>
       </button>
 
-      <a routerLink="/novedades" routerLinkActive="active">Novedades</a>
-      <a routerLink="/contacto" routerLinkActive="active">Contacto</a>
+      <a [routerLink]="store.storeLink('novedades')" routerLinkActive="active">Novedades</a>
+      <a [routerLink]="store.storeLink('contacto')" routerLinkActive="active">Contacto</a>
     </nav>
   </div>
 

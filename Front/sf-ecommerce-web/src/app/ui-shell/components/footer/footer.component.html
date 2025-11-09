@@ -11,13 +11,13 @@
     <nav class="footer__links">
       <div>
         <span class="title">Compañía</span>
-        <a routerLink="/inicio">Inicio</a>
-        <a routerLink="/novedades">Novedades</a>
+        <a [routerLink]="store.storeLink('inicio')">Inicio</a>
+        <a [routerLink]="store.storeLink('novedades')">Novedades</a>
       </div>
       <div>
         <span class="title">Soporte</span>
-        <a routerLink="/contacto">Contacto</a>
-        <a routerLink="/pedidos">Mis pedidos</a>
+        <a [routerLink]="store.storeLink('contacto')">Contacto</a>
+        <a [routerLink]="store.storeLink('pedidos')">Mis pedidos</a>
         <a href="mailto:hola@mitienda.cl">hola@mitienda.cl</a>
       </div>
       <div>

@@ -44,7 +44,7 @@
       <p class="eyebrow">Lo más reciente</p>
       <h2>Novedades seleccionadas</h2>
     </div>
-    <a mat-stroked-button color="primary" routerLink="/novedades">
+    <a mat-stroked-button color="primary" [routerLink]="store.storeLink('novedades')">
       Ver todas
       <mat-icon>chevron_right</mat-icon>
     </a>

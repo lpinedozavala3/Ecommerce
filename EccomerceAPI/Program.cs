@@ -20,7 +20,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(CorsPolicy, p =>
         p.WithOrigins("http://localhost:4200", "https://localhost:4200")
          .AllowAnyMethod()   // incluye OPTIONS
-         .AllowAnyHeader()); // permite X-Store-Domain, etc.
+         .AllowAnyHeader()); // permite X-Store-Name, etc.
 });
 
 // Otros servicios
@@ -31,6 +31,7 @@ builder.Services.AddSingleton<IUriService>(o =>
     string uri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent());
     return new UriService(uri);
 });
+builder.Services.AddTransient<ITiendaService, TiendaService>();
 builder.Services.AddTransient<ITenantResolver, TenantResolver>();
 builder.Services.AddTransient<ICatalogoService, CatalogoService>();
 builder.Services.AddTransient<IAuthService, AuthService>();

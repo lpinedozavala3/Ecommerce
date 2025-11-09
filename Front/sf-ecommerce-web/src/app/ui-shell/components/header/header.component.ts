@@ -9,6 +9,7 @@ import { AuthStateService } from 'src/app/core/services/auth-state.service';
 import { UsuarioSesion } from 'src/app/core/models/auth';
 import { CatalogoService } from 'src/app/core/services/catalogo.service';
 import { Categoria } from 'src/app/core/models/Categoria.';
+import { StoreContextService } from 'src/app/core/services/store-context.service';
 
 @Component({
   selector: 'app-header',
@@ -23,12 +24,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
   selectedCategoriaId: string | null = null;
 
   private subs: Subscription[] = [];
+  private currentStoreId: string | null = null;
 
   constructor(
     private carrito: CarritoService,
     private authState: AuthStateService,
     private catalogo: CatalogoService,
-    private router: Router
+    private router: Router,
+    public store: StoreContextService
   ) {}
 
   ngOnInit(): void {
@@ -41,7 +44,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
     );
 
     this.subs.push(
-      this.catalogo.obtenerCategorias().subscribe(categorias => (this.categorias = categorias ?? []))
+      this.store.storeInfo$.subscribe(info => {
+        if (!info) {
+          this.categorias = [];
+          this.currentStoreId = null;
+          return;
+        }
+
+        if (info.tiendaId !== this.currentStoreId) {
+          this.currentStoreId = info.tiendaId;
+          const sub = this.catalogo.obtenerCategorias().subscribe(categorias => (this.categorias = categorias ?? []));
+          this.subs.push(sub);
+        }
+      })
     );
 
     this.syncFromRoute();
@@ -61,7 +76,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   submitSearch(): void {
     const term = (this.searchControl.value || '').trim();
-    this.router.navigate(['/catalogo'], {
+    this.router.navigate(this.store.storeLink('catalogo'), {
       queryParams: {
         q: term || null,
         categoria: this.selectedCategoriaId || null,
@@ -74,7 +89,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   clearSearch(event: MouseEvent): void {
     event.preventDefault();
     this.searchControl.setValue('');
-    this.router.navigate(['/catalogo'], {
+    this.router.navigate(this.store.storeLink('catalogo'), {
       queryParams: {
         q: null,
         categoria: this.selectedCategoriaId || null,
@@ -86,7 +101,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   navegarCategoria(cat: Categoria): void {
     const term = (this.searchControl.value || '').trim();
-    this.router.navigate(['/catalogo'], {
+    this.router.navigate(this.store.storeLink('catalogo'), {
       queryParams: {
         categoria: cat.idCategoria,
         q: term || null,
@@ -98,7 +113,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   verCatalogo(): void {
     const term = (this.searchControl.value || '').trim();
-    this.router.navigate(['/catalogo'], {
+    this.router.navigate(this.store.storeLink('catalogo'), {
       queryParams: {
         q: term || null,
         categoria: null,
@@ -108,7 +123,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   irAlCarrito(): void {
-    this.router.navigate(['/carrito']);
+    this.router.navigate(this.store.storeLink('carrito'));
   }
 
   private syncFromRoute(): void {

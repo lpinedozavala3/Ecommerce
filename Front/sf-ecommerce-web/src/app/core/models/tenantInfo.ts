@@ -1,7 +1,8 @@
 export interface TenantInfo {
-  tiendaId: number;
+  tiendaId: string;
   emisorId: string;
   nombreComercial: string;
-  plantilla: string;           // 'T1' | 'T2'...
-  brandingJson?: any;
+  nombreFantasia: string;
+  plantilla: string | null;
+  brandingJson?: string | null;
 }
