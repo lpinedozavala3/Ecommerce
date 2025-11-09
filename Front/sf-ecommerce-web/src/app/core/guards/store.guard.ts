@@ -12,14 +12,14 @@ export class StoreGuard implements CanActivate, CanActivateChild {
     const storeName = route.paramMap.get('store');
     if (!storeName) {
       this.storeContext.clearStore();
-      return of(this.router.parseUrl('/pagina-no-encontrada'));
+      return of(this.router.createUrlTree(['/pagina-no-encontrada']));
     }
 
     return this.storeContext.ensureStore(storeName).pipe(
       map(() => true),
       catchError(() => {
-        this.storeContext.clearStore();
-        return of(this.router.parseUrl('/pagina-no-encontrada'));
+        this.storeContext.clearStore({ preserveFailure: true });
+        return of(this.router.createUrlTree(['/pagina-no-encontrada']));
       })
     );
   }
