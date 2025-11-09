@@ -20,6 +20,7 @@ namespace Database.Models
         public string? JsonBranding { get; set; }
         public DateTime CreadoEn { get; set; }
         public DateTime ActualizadoEn { get; set; }
+        public string? NombreFantasia { get; set; }
 
         public virtual Emisor IdEmisorNavigation { get; set; } = null!;
         public virtual Plantilla IdPlantillaNavigation { get; set; } = null!;

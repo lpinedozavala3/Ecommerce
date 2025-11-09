@@ -861,6 +861,10 @@ namespace Database.Models
                     .IsUnicode(false)
                     .HasColumnName("NOMBRE_COMERCIAL");
 
+                entity.Property(e => e.NombreFantasia)
+                    .HasMaxLength(255)
+                    .HasColumnName("NOMBRE_FANTASIA");
+
                 entity.HasOne(d => d.IdEmisorNavigation)
                     .WithOne(p => p.Tiendum)
                     .HasForeignKey<Tiendum>(d => d.IdEmisor)
