@@ -1,12 +1,10 @@
-﻿// EccomerceAPI/Controllers/CatalogoController.cs
+using System;
+using System.Collections.Generic;
 using Database.DTOs;
 using Database.Filters;
-using Database.Models;
-using EccomerceAPI.Helpers;
 using EccomerceAPI.Interfaces;
-using EccomerceAPI.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace EccomerceAPI.Controllers
 {
@@ -14,70 +12,167 @@ namespace EccomerceAPI.Controllers
     [Route("api/catalogo")]
     public sealed class CatalogoController : ControllerBase
     {
-        private readonly contextApp _db;
         private readonly ITenantResolver _tenant;
         private readonly ICatalogoService _catalogo;
-        private readonly IUriService _uriService;
 
-        public CatalogoController(contextApp db, ITenantResolver tenant, ICatalogoService catalogo, IUriService uriService)
+        public CatalogoController(ITenantResolver tenant, ICatalogoService catalogo)
         {
-            _db = db;
             _tenant = tenant;
             _catalogo = catalogo;
-            _uriService = uriService;
         }
 
-        // GET /api/catalogo/productos/list?searchText=...&categoriaId=...&pageNumber=1&pageSize=12
         [HttpGet("productos/list")]
-        public async Task<ActionResult<PagedResponse<List<ProductoDto>>>> ProductosList(
+        public async Task<ActionResult<Response<PagedResponse<List<ProductoDto>>>>> ProductosList(
             [FromQuery] ProductoFilter productoFilter,
             [FromQuery] PaginationFilter pagination)
         {
-            var route = Request.Path.Value;
-            var valid = new PaginationFilter(pagination.PageNumber, pagination.PageSize);
+            var route = Request.Path.Value ?? string.Empty;
 
-            var (_, emisorId) = await _tenant.ResolveAsync(HttpContext);
-            productoFilter.EmisorId = emisorId;
-            productoFilter.VisibleEnTienda = true;
+            try
+            {
+                var (_, emisorId) = await _tenant.ResolveAsync(HttpContext);
+                var result = await _catalogo.ObtenerProductosAsync(emisorId, productoFilter, pagination, route);
 
-            var (items, total) = await _catalogo.ListFilter(productoFilter, valid);
-            var response = PaginationHelper.CreatePagedReponse(items, valid, total, _uriService, route);
-            return Ok(response);
+                if (!result.IsSuccess)
+                {
+                    var errors = result.Errors.Length > 0 ? result.Errors : new[] { result.Message };
+                    return StatusCode((int)result.StatusCode, new Response<PagedResponse<List<ProductoDto>>>
+                    {
+                        Status = (int)result.StatusCode,
+                        Message = string.IsNullOrWhiteSpace(result.Message)
+                            ? "No se pudo obtener el catálogo."
+                            : result.Message,
+                        Errors = errors
+                    });
+                }
+
+                return StatusCode((int)result.StatusCode, new Response<PagedResponse<List<ProductoDto>>>
+                {
+                    Status = (int)result.StatusCode,
+                    Message = string.IsNullOrWhiteSpace(result.Message)
+                        ? "Catálogo obtenido correctamente."
+                        : result.Message,
+                    Data = result.Data,
+                    Errors = Array.Empty<string>()
+                });
+            }
+            catch (Exception ex)
+            {
+                var messageTitle = "Error al obtener el catálogo";
+#if DEBUG
+                var errorMessage = ex.Message;
+                Console.WriteLine(errorMessage);
+#else
+                var errorMessage = "Ocurrió un error inesperado. Consulte con el administrador";
+#endif
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response<PagedResponse<List<ProductoDto>>>
+                {
+                    Status = StatusCodes.Status500InternalServerError,
+                    Message = messageTitle,
+                    Errors = new[] { errorMessage }
+                });
+            }
         }
 
         [HttpGet("productos/{productoId:guid}")]
-        public async Task<ActionResult<ProductoDetalleDto>> ObtenerDetalle(Guid productoId)
+        public async Task<ActionResult<Response<ProductoDetalleDto>>> ObtenerDetalle(Guid productoId)
         {
-            var (_, emisorId) = await _tenant.ResolveAsync(HttpContext);
-            var detalle = await _catalogo.ObtenerDetalle(productoId, emisorId);
-            if (detalle is null)
+            try
             {
-                return NotFound();
-            }
+                var (_, emisorId) = await _tenant.ResolveAsync(HttpContext);
+                var result = await _catalogo.ObtenerDetalleAsync(productoId, emisorId);
 
-            return Ok(detalle);
+                if (!result.IsSuccess)
+                {
+                    var errors = result.Errors.Length > 0 ? result.Errors : new[] { result.Message };
+                    return StatusCode((int)result.StatusCode, new Response<ProductoDetalleDto>
+                    {
+                        Status = (int)result.StatusCode,
+                        Message = string.IsNullOrWhiteSpace(result.Message)
+                            ? "No se pudo obtener el detalle del producto."
+                            : result.Message,
+                        Errors = errors
+                    });
+                }
+
+                return StatusCode((int)result.StatusCode, new Response<ProductoDetalleDto>
+                {
+                    Status = (int)result.StatusCode,
+                    Message = string.IsNullOrWhiteSpace(result.Message)
+                        ? "Detalle del producto obtenido correctamente."
+                        : result.Message,
+                    Data = result.Data,
+                    Errors = Array.Empty<string>()
+                });
+            }
+            catch (Exception ex)
+            {
+                var messageTitle = "Error al obtener el detalle del producto";
+#if DEBUG
+                var errorMessage = ex.Message;
+                Console.WriteLine(errorMessage);
+#else
+                var errorMessage = "Ocurrió un error inesperado. Consulte con el administrador";
+#endif
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response<ProductoDetalleDto>
+                {
+                    Status = StatusCodes.Status500InternalServerError,
+                    Message = messageTitle,
+                    Errors = new[] { errorMessage }
+                });
+            }
         }
 
-        // GET /api/catalogo/categorias
         [HttpGet("categorias")]
-        public async Task<ActionResult<IEnumerable<CategoriaDto>>> GetCategorias()
+        public async Task<ActionResult<Response<List<CategoriaDto>>>> GetCategorias()
         {
-            var (_, emisorId) = await _tenant.ResolveAsync(HttpContext);
+            try
+            {
+                var (_, emisorId) = await _tenant.ResolveAsync(HttpContext);
+                var result = await _catalogo.ObtenerCategoriasAsync(emisorId);
 
-            var categorias = await _db.Categoria
-                .AsNoTracking()
-                .Where(c => c.IdEmisor == emisorId)
-                .Select(c => new CategoriaDto
+                if (!result.IsSuccess)
                 {
-                    IdCategoria     = c.IdCategoria,
-                    NombreCategoria = c.NombreCategoria,
-                    SlugCategoria   = c.SlugCategoria,
-                    ProductosVisibles = c.IdProductos.Count(p => p.VisibleEnTienda && p.EmisorId == emisorId)
-                })
-                .OrderBy(c => c.NombreCategoria)
-                .ToListAsync();
+                    var errors = result.Errors.Length > 0 ? result.Errors : new[] { result.Message };
+                    return StatusCode((int)result.StatusCode, new Response<List<CategoriaDto>>
+                    {
+                        Status = (int)result.StatusCode,
+                        Message = string.IsNullOrWhiteSpace(result.Message)
+                            ? "No se pudieron obtener las categorías."
+                            : result.Message,
+                        Errors = errors
+                    });
+                }
 
-            return Ok(categorias);
+                return StatusCode((int)result.StatusCode, new Response<List<CategoriaDto>>
+                {
+                    Status = (int)result.StatusCode,
+                    Message = string.IsNullOrWhiteSpace(result.Message)
+                        ? "Categorías obtenidas correctamente."
+                        : result.Message,
+                    Data = result.Data,
+                    Errors = Array.Empty<string>()
+                });
+            }
+            catch (Exception ex)
+            {
+                var messageTitle = "Error al obtener las categorías";
+#if DEBUG
+                var errorMessage = ex.Message;
+                Console.WriteLine(errorMessage);
+#else
+                var errorMessage = "Ocurrió un error inesperado. Consulte con el administrador";
+#endif
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response<List<CategoriaDto>>
+                {
+                    Status = StatusCodes.Status500InternalServerError,
+                    Message = messageTitle,
+                    Errors = new[] { errorMessage }
+                });
+            }
         }
     }
 }

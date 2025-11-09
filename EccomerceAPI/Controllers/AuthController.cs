@@ -1,5 +1,8 @@
+using System;
+using Database.DTOs;
 using EccomerceAPI.Contracts.Auth;
 using EccomerceAPI.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EccomerceAPI.Controllers
@@ -18,34 +21,102 @@ namespace EccomerceAPI.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<AuthResponse>> Registrar([FromBody] RegisterRequest request)
+        public async Task<ActionResult<Response<AuthResponse>>> Registrar([FromBody] RegisterRequest request)
         {
-            var (tiendaId, _) = await _tenantResolver.ResolveAsync(HttpContext);
-
             try
             {
-                var resp = await _authService.RegistrarAsync(request, tiendaId);
-                return Ok(resp);
+                var (tiendaId, _) = await _tenantResolver.ResolveAsync(HttpContext);
+                var result = await _authService.RegistrarAsync(request, tiendaId);
+
+                if (!result.IsSuccess)
+                {
+                    var errors = result.Errors.Length > 0 ? result.Errors : new[] { result.Message };
+                    return StatusCode((int)result.StatusCode, new Response<AuthResponse>
+                    {
+                        Status = (int)result.StatusCode,
+                        Message = string.IsNullOrWhiteSpace(result.Message)
+                            ? "No se pudo registrar al cliente."
+                            : result.Message,
+                        Errors = errors
+                    });
+                }
+
+                return StatusCode((int)result.StatusCode, new Response<AuthResponse>
+                {
+                    Status = (int)result.StatusCode,
+                    Message = string.IsNullOrWhiteSpace(result.Message)
+                        ? "Cliente registrado correctamente."
+                        : result.Message,
+                    Data = result.Data,
+                    Errors = Array.Empty<string>()
+                });
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
-                return Conflict(new { message = ex.Message });
+                var messageTitle = "Error al registrar al cliente";
+#if DEBUG
+                var errorMessage = ex.Message;
+                Console.WriteLine(errorMessage);
+#else
+                var errorMessage = "Ocurrió un error inesperado. Consulte con el administrador";
+#endif
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response<AuthResponse>
+                {
+                    Status = StatusCodes.Status500InternalServerError,
+                    Message = messageTitle,
+                    Errors = new[] { errorMessage }
+                });
             }
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<AuthResponse>> Login([FromBody] LoginRequest request)
+        public async Task<ActionResult<Response<AuthResponse>>> Login([FromBody] LoginRequest request)
         {
-            var (tiendaId, _) = await _tenantResolver.ResolveAsync(HttpContext);
-
             try
             {
-                var resp = await _authService.IniciarSesionAsync(request, tiendaId);
-                return Ok(resp);
+                var (tiendaId, _) = await _tenantResolver.ResolveAsync(HttpContext);
+                var result = await _authService.IniciarSesionAsync(request, tiendaId);
+
+                if (!result.IsSuccess)
+                {
+                    var errors = result.Errors.Length > 0 ? result.Errors : new[] { result.Message };
+                    return StatusCode((int)result.StatusCode, new Response<AuthResponse>
+                    {
+                        Status = (int)result.StatusCode,
+                        Message = string.IsNullOrWhiteSpace(result.Message)
+                            ? "No se pudo iniciar sesión."
+                            : result.Message,
+                        Errors = errors
+                    });
+                }
+
+                return StatusCode((int)result.StatusCode, new Response<AuthResponse>
+                {
+                    Status = (int)result.StatusCode,
+                    Message = string.IsNullOrWhiteSpace(result.Message)
+                        ? "Inicio de sesión exitoso."
+                        : result.Message,
+                    Data = result.Data,
+                    Errors = Array.Empty<string>()
+                });
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
-                return Unauthorized(new { message = ex.Message });
+                var messageTitle = "Error al iniciar sesión";
+#if DEBUG
+                var errorMessage = ex.Message;
+                Console.WriteLine(errorMessage);
+#else
+                var errorMessage = "Ocurrió un error inesperado. Consulte con el administrador";
+#endif
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response<AuthResponse>
+                {
+                    Status = StatusCodes.Status500InternalServerError,
+                    Message = messageTitle,
+                    Errors = new[] { errorMessage }
+                });
             }
         }
     }

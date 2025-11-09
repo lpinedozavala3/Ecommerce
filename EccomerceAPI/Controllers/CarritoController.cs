@@ -1,6 +1,8 @@
-using System.Linq;
+using System;
+using Database.DTOs;
 using EccomerceAPI.Contracts.Carrito;
 using EccomerceAPI.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EccomerceAPI.Controllers
@@ -10,84 +12,62 @@ namespace EccomerceAPI.Controllers
     public sealed class CarritoController : ControllerBase
     {
         private readonly ITenantResolver _tenantResolver;
-        private readonly ICatalogoService _catalogoService;
+        private readonly ICarritoService _carritoService;
 
-        private const decimal CostoEnvio = 5500m;
-        private const decimal TasaIva = 0.19m;
-
-        public CarritoController(ITenantResolver tenantResolver, ICatalogoService catalogoService)
+        public CarritoController(ITenantResolver tenantResolver, ICarritoService carritoService)
         {
             _tenantResolver = tenantResolver;
-            _catalogoService = catalogoService;
+            _carritoService = carritoService;
         }
 
         [HttpPost("resumen")]
-        public async Task<ActionResult<CartSummaryResponse>> ObtenerResumen([FromBody] CartSummaryRequest request)
+        public async Task<ActionResult<Response<CartSummaryResponse>>> ObtenerResumen([FromBody] CartSummaryRequest request)
         {
-            if (request?.Items is null || request.Items.Count == 0)
+            try
             {
-                return BadRequest(new { message = "El carrito está vacío." });
-            }
+                var (_, emisorId) = await _tenantResolver.ResolveAsync(HttpContext);
+                var result = await _carritoService.ObtenerResumenAsync(emisorId, request);
 
-            var (_, emisorId) = await _tenantResolver.ResolveAsync(HttpContext);
-            var ids = request.Items.Select(i => i.ProductoId);
-            var productos = await _catalogoService.ObtenerPorIds(ids, emisorId);
-
-            var response = new CartSummaryResponse();
-
-            foreach (var item in request.Items)
-            {
-                if (!productos.TryGetValue(item.ProductoId, out var producto))
+                if (!result.IsSuccess)
                 {
-                    response.Mensajes.Add($"Producto {item.ProductoId} no disponible.");
-                    continue;
+                    var errors = result.Errors.Length > 0 ? result.Errors : new[] { result.Message };
+                    return StatusCode((int)result.StatusCode, new Response<CartSummaryResponse>
+                    {
+                        Status = (int)result.StatusCode,
+                        Message = string.IsNullOrWhiteSpace(result.Message)
+                            ? "No se pudo calcular el resumen del carrito."
+                            : result.Message,
+                        Errors = errors
+                    });
                 }
 
-                var cantidad = Math.Clamp(item.Cantidad, 1, 999);
-                var stockDisponible = producto.Stock;
-                if (stockDisponible <= 0)
+                return StatusCode((int)result.StatusCode, new Response<CartSummaryResponse>
                 {
-                    response.Mensajes.Add($"{producto.NombrePublico ?? "Producto"} no tiene stock disponible.");
-                }
-
-                if (cantidad > stockDisponible)
-                {
-                    cantidad = stockDisponible;
-                    response.Mensajes.Add($"Se ajustó la cantidad de {producto.NombrePublico ?? "producto"} al stock disponible ({stockDisponible}).");
-                }
-
-                if (cantidad <= 0)
-                {
-                    continue;
-                }
-
-                var subtotal = producto.Precio * cantidad;
-                var iva = producto.Exento ? 0 : decimal.Round(subtotal * TasaIva, 0, MidpointRounding.AwayFromZero);
-
-                response.Items.Add(new CartItemResponse
-                {
-                    ProductoId = producto.ProductoId,
-                    Nombre = producto.NombrePublico ?? "Producto",
-                    ImagenBase64 = producto.ImagenBase64,
-                    Precio = producto.Precio,
-                    CantidadSolicitada = cantidad,
-                    StockDisponible = stockDisponible,
-                    Exento = producto.Exento,
-                    Subtotal = subtotal,
-                    Iva = iva
+                    Status = (int)result.StatusCode,
+                    Message = string.IsNullOrWhiteSpace(result.Message)
+                        ? "Resumen del carrito calculado correctamente."
+                        : result.Message,
+                    Data = result.Data,
+                    Errors = Array.Empty<string>()
                 });
-
-                response.Subtotal += subtotal;
-                response.Impuestos += iva;
             }
-
-            if (response.Items.Count == 0)
+            catch (Exception ex)
             {
-                return BadRequest(new { message = "Ninguno de los productos está disponible." });
-            }
+                var messageTitle = "Error al obtener el resumen del carrito";
+#if DEBUG
+                var errorMessage = ex.Message;
+                Console.WriteLine(errorMessage);
+#else
+                var errorMessage = "Ocurrió un error inesperado. Consulte con el administrador";
+#endif
 
-            response.Envio = CostoEnvio;
-            return Ok(response);
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response<CartSummaryResponse>
+                {
+                    Status = StatusCodes.Status500InternalServerError,
+                    Message = messageTitle,
+                    Errors = new[] { errorMessage }
+                });
+            }
         }
     }
 }
