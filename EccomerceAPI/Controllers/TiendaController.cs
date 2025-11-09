@@ -2,7 +2,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Database.DTOs;
 using EccomerceAPI.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EccomerceAPI.Controllers
@@ -19,17 +18,10 @@ namespace EccomerceAPI.Controllers
         }
 
         [HttpGet("{nombreFantasia}")]
-        [ProducesResponseType(typeof(TenantInfoDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> ObtenerPorNombreFantasia(string nombreFantasia, CancellationToken cancellationToken)
+        public async Task<ActionResult<Response<TenantInfoDto>>> ObtenerPorNombreFantasia(string nombreFantasia, CancellationToken cancellationToken)
         {
-            var info = await _tiendaService.ObtenerPorNombreFantasiaAsync(nombreFantasia, cancellationToken);
-            if (info is null)
-            {
-                return NotFound();
-            }
-
-            return Ok(info);
+            var response = await _tiendaService.ObtenerPorNombreFantasiaAsync(nombreFantasia, cancellationToken);
+            return StatusCode(response.Status, response);
         }
     }
 }

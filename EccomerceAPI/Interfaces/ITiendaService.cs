@@ -6,6 +6,6 @@ namespace EccomerceAPI.Interfaces
 {
     public interface ITiendaService
     {
-        Task<TenantInfoDto?> ObtenerPorNombreFantasiaAsync(string nombreFantasia, CancellationToken cancellationToken = default);
+        Task<Response<TenantInfoDto>> ObtenerPorNombreFantasiaAsync(string nombreFantasia, CancellationToken cancellationToken = default);
     }
 }

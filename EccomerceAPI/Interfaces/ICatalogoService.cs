@@ -1,12 +1,17 @@
-﻿using Database.DTOs;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Database.DTOs;
 using Database.Filters;
+using Microsoft.AspNetCore.Http;
 
 namespace EccomerceAPI.Interfaces
 {
     public interface ICatalogoService
     {
-        Task<(List<ProductoDto> Items, int Total)> ListFilter(ProductoFilter filter, PaginationFilter pagination);
-        Task<ProductoDetalleDto?> ObtenerDetalle(Guid productoId, Guid emisorId);
-        Task<Dictionary<Guid, ProductoDto>> ObtenerPorIds(IEnumerable<Guid> ids, Guid emisorId);
+        Task<Response<PagedResponse<List<ProductoDto>>>> ObtenerProductosAsync(HttpContext httpContext, ProductoFilter filter, PaginationFilter pagination);
+        Task<Response<ProductoDetalleDto>> ObtenerDetalleAsync(HttpContext httpContext, Guid productoId);
+        Task<Response<IReadOnlyList<CategoriaDto>>> ObtenerCategoriasAsync(HttpContext httpContext);
+        Task<Response<Dictionary<Guid, ProductoDto>>> ObtenerProductosPorIdsAsync(Guid emisorId, IEnumerable<Guid> ids);
     }
 }

@@ -8,11 +8,20 @@ namespace Database.DTOs
 {
     public class Response<T>
     {
+        public Response()
+        {
+            Errors = Array.Empty<string>();
+        }
+
         public int Status { get; set; }
-        public string Message { get; set; }
-        public T Data { get; set; }
+        public string? Message { get; set; }
+        public T? Data { get; set; }
         public string[] Errors { get; set; }
 
-        public override string ToString() => $"Status: {Status}, Message: {Message}, Data: {Data} Errors: {string.Join("\n", Errors)}";
+        public override string ToString()
+        {
+            var errors = Errors?.Length > 0 ? string.Join("\n", Errors) : string.Empty;
+            return $"Status: {Status}, Message: {Message}, Data: {Data} Errors: {errors}";
+        }
     }
 }
