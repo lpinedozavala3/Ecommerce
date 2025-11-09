@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 import { CartSummary } from '../models/cart';
 import { ItemCarrito } from './carrito.service';
+import { ApiResponse } from '../models/api-response';
 
 interface CartRequestItem {
   productoId: string;
@@ -25,6 +26,8 @@ export class CartApiService {
     const payload: CartSummaryRequest = {
       items: items.map(i => ({ productoId: i.idProducto, cantidad: i.cantidad }))
     };
-    return this.http.post<CartSummary>(`${this.baseUrl}/resumen`, payload);
+    return this.http
+      .post<ApiResponse<CartSummary>>(`${this.baseUrl}/resumen`, payload)
+      .pipe(map(resp => resp.data));
   }
 }

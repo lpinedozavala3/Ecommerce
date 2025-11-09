@@ -34,6 +34,7 @@ builder.Services.AddSingleton<IUriService>(o =>
 builder.Services.AddTransient<ITiendaService, TiendaService>();
 builder.Services.AddTransient<ITenantResolver, TenantResolver>();
 builder.Services.AddTransient<ICatalogoService, CatalogoService>();
+builder.Services.AddTransient<ICarritoService, CarritoService>();
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<IPedidosService, PedidosService>();
 builder.Services.AddHttpContextAccessor(); // útil si TenantResolver lee headers/host

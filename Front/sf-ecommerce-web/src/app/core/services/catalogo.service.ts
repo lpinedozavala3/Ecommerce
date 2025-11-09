@@ -1,6 +1,6 @@
 // core/services/catalogo.service.ts
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Page } from '../models/Page';
@@ -8,6 +8,7 @@ import { PagedResponse } from '../models/Paged';
 import { ProductoFilter } from '../models/Filters/ProductoFilter';
 import { Categoria } from '../models/Categoria.';
 import { Producto, ProductoDetalle } from '../models/producto';
+import { ApiResponse } from '../models/api-response';
 
 @Injectable({ providedIn: 'root' })
 export class CatalogoService {
@@ -32,11 +33,15 @@ getDataByPage(filter: ProductoFilter, page: Page): Observable<PagedResponse<Prod
 
 
   obtenerCategorias(): Observable<Categoria[]> {
-    return this.http.get<Categoria[]>(`${this.REST_API_SERVER}/categorias`);
+    return this.http
+      .get<ApiResponse<Categoria[]>>(`${this.REST_API_SERVER}/categorias`)
+      .pipe(map(resp => resp.data ?? []));
   }
 
   obtenerDetalle(productoId: string): Observable<ProductoDetalle> {
-    return this.http.get<ProductoDetalle>(`${this.REST_API_SERVER}/productos/${productoId}`);
+    return this.http
+      .get<ApiResponse<ProductoDetalle>>(`${this.REST_API_SERVER}/productos/${productoId}`)
+      .pipe(map(resp => resp.data));
   }
 
   // (Opcional) compatibilidad si aún lo usas en otra vista
@@ -44,6 +49,8 @@ getDataByPage(filter: ProductoFilter, page: Page): Observable<PagedResponse<Prod
     let params = new HttpParams();
     if (searchText)  params = params.set('searchText', searchText);
     if (categoriaId) params = params.set('categoriaId', categoriaId);
-    return this.http.get<Producto[]>(`${this.REST_API_SERVER}/productos`, { params });
+    return this.http
+      .get<ApiResponse<Producto[]>>(`${this.REST_API_SERVER}/productos`, { params })
+      .pipe(map(resp => resp.data ?? []));
   }
 }

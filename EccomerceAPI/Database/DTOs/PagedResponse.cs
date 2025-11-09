@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Database.DTOs
 {
@@ -17,12 +14,13 @@ namespace Database.DTOs
         public Uri? NextPage { get; set; }
         public Uri? PreviousPage { get; set; }
 
-        public PagedResponse(T data, int pageNumber, int pageSize)
+        public PagedResponse(T data, int pageNumber, int pageSize, string? message = null)
         {
             PageNumber = pageNumber;
             PageSize = pageSize;
             Data = data;
-            Message = null;
+            Status = StatusCodes.Status200OK;
+            Message = message;
             Errors = null;
         }
 

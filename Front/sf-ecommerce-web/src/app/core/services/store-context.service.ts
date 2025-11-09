@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { catchError, finalize, shareReplay, tap } from 'rxjs/operators';
+import { catchError, finalize, map, shareReplay, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { TenantInfo } from '../models/tenantInfo';
+import { ApiResponse } from '../models/api-response';
 
 @Injectable({ providedIn: 'root' })
 export class StoreContextService {
@@ -51,9 +52,10 @@ export class StoreContextService {
     this.pendingStoreName = normalized;
 
     const request$ = this.http
-      .get<TenantInfo>(`${environment.backend_server}/tienda/${encodeURIComponent(sanitized)}`)
+      .get<ApiResponse<TenantInfo>>(`${environment.backend_server}/tienda/${encodeURIComponent(sanitized)}`)
+      .pipe(map(resp => resp.data))
       .pipe(
-        tap((info: TenantInfo) => {
+        tap((info: TenantInfo | undefined) => {
           if (!info || !info.tiendaId) {
             throw new Error('Tienda no encontrada');
           }
