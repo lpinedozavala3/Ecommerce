@@ -45,7 +45,13 @@ export class StoreContextService {
     }
 
     if (this.pendingRequest$ && this.pendingStoreName === normalized) {
-      return this.pendingRequest$;
+      // Asegurarnos de que el tipo devuelto sea Observable<TenantInfo>
+      return this.pendingRequest$.pipe(
+        map(tenant => {
+          if (!tenant) throw new Error('La tienda no existe.');
+          return tenant;
+        })
+      );
     }
 
     // No asignar currentStoreName hasta confirmar que la tienda existe
@@ -53,12 +59,15 @@ export class StoreContextService {
 
     const request$ = this.http
       .get<ApiResponse<TenantInfo>>(`${environment.backend_server}/tienda/${encodeURIComponent(sanitized)}`)
-      .pipe(map(resp => resp.data))
       .pipe(
-        tap((info: TenantInfo | undefined) => {
+        map((resp: ApiResponse<TenantInfo>) => resp.data),
+        map((info: TenantInfo) => {
           if (!info || !info.tiendaId) {
             throw new Error('Tienda no encontrada');
           }
+          return info;
+        }),
+        tap((info: TenantInfo) => {
           this.lastFailedStoreName = null;
           // Solo asignar currentStoreName si la tienda existe
           this.currentStoreName = sanitized;
@@ -77,7 +86,13 @@ export class StoreContextService {
         shareReplay({ bufferSize: 1, refCount: false })
       );
 
-    this.pendingRequest$ = request$;
+    // Aseguramos que request$ sea Observable<TenantInfo>
+    this.pendingRequest$ = request$.pipe(
+      map(tenant => {
+        if (!tenant) throw new Error('La tienda no existe.');
+        return tenant;
+      })
+    );
 
     return request$;
   }

@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.AspNetCore.Http;
 
 namespace Database.DTOs
 {
@@ -19,7 +18,6 @@ namespace Database.DTOs
             PageNumber = pageNumber;
             PageSize = pageSize;
             Data = data;
-            Status = StatusCodes.Status200OK;
             Message = message;
             Errors = null;
         }
