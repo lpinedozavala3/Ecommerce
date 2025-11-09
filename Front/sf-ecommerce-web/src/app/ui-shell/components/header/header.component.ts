@@ -51,8 +51,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
           return;
         }
 
-        if (info.tiendaId !== this.currentStoreId) {
-          this.currentStoreId = info.tiendaId;
+        const tiendaIdStr = String(info.tiendaId);
+        if (tiendaIdStr !== this.currentStoreId) {
+          this.currentStoreId = tiendaIdStr;
           const sub = this.catalogo.obtenerCategorias().subscribe(categorias => (this.categorias = categorias ?? []));
           this.subs.push(sub);
         }

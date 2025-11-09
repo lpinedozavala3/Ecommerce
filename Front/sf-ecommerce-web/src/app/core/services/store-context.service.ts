@@ -47,15 +47,19 @@ export class StoreContextService {
       return this.pendingRequest$;
     }
 
-    this.currentStoreName = sanitized;
+    // No asignar currentStoreName hasta confirmar que la tienda existe
     this.pendingStoreName = normalized;
 
     const request$ = this.http
       .get<TenantInfo>(`${environment.backend_server}/tienda/${encodeURIComponent(sanitized)}`)
       .pipe(
-        tap(info => {
+        tap((info: TenantInfo) => {
+          if (!info || !info.tiendaId) {
+            throw new Error('Tienda no encontrada');
+          }
           this.lastFailedStoreName = null;
-          this.currentStoreName = info?.nombreFantasia ?? sanitized;
+          // Solo asignar currentStoreName si la tienda existe
+          this.currentStoreName = sanitized;
           this.storeInfoSubject.next(info);
         }),
         catchError(error => {

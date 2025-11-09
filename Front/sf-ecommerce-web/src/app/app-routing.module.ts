@@ -3,6 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { StoreGuard } from './core/guards/store.guard';
 
 const routes: Routes = [
+  { path: 'pagina-no-encontrada', loadChildren: () => import('./features/not-found/not-found.module').then(m => m.NotFoundModule) },
+  { path: '', pathMatch: 'full', redirectTo: 'pagina-no-encontrada' },
   {
     path: ':store',
     canActivate: [StoreGuard],
@@ -22,8 +24,6 @@ const routes: Routes = [
       { path: 'registro', redirectTo: 'auth/registro', pathMatch: 'full' }
     ]
   },
-  { path: 'pagina-no-encontrada', loadChildren: () => import('./features/not-found/not-found.module').then(m => m.NotFoundModule) },
-  { path: '', pathMatch: 'full', redirectTo: 'pagina-no-encontrada' },
   { path: '**', redirectTo: 'pagina-no-encontrada' }
 ];
 

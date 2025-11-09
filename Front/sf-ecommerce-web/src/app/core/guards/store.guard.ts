@@ -10,7 +10,7 @@ export class StoreGuard implements CanActivate, CanActivateChild {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> {
     const storeName = route.paramMap.get('store');
-    if (!storeName) {
+    if (!storeName || !storeName.trim() || storeName === 'pagina-no-encontrada') {
       this.storeContext.clearStore();
       return of(this.router.createUrlTree(['/pagina-no-encontrada']));
     }
