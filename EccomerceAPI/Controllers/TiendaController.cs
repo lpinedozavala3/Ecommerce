@@ -2,9 +2,9 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Database.DTOs;
-using EccomerceAPI.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using EccomerceAPI.Interfaces;
 
 namespace EccomerceAPI.Controllers
 {
@@ -28,26 +28,38 @@ namespace EccomerceAPI.Controllers
             {
                 var result = await _tiendaService.ObtenerPorNombreFantasiaAsync(nombreFantasia, cancellationToken);
 
-                if (!result.IsSuccess)
+                if (!result.response)
                 {
-                    var errors = result.Errors.Length > 0 ? result.Errors : new[] { result.Message };
-                    return StatusCode((int)result.StatusCode, new Response<TenantInfoDto>
+                    var status = result.status;
+                    var message = string.IsNullOrWhiteSpace(result.message)
+                        ? "No se pudo obtener la tienda."
+                        : result.message;
+
+                    if (status == StatusCodes.Status500InternalServerError)
                     {
-                        Status = (int)result.StatusCode,
-                        Message = string.IsNullOrWhiteSpace(result.Message)
-                            ? "No se pudo obtener la tienda."
-                            : result.Message,
-                        Errors = errors
+                        return StatusCode(status, new Response<TenantInfoDto>
+                        {
+                            Status = status,
+                            Message = message,
+                            Errors = new[] { message }
+                        });
+                    }
+
+                    return StatusCode(status, new Response<TenantInfoDto>
+                    {
+                        Status = status,
+                        Message = message,
+                        Errors = new[] { message }
                     });
                 }
 
-                return StatusCode((int)result.StatusCode, new Response<TenantInfoDto>
+                return StatusCode(result.status, new Response<TenantInfoDto>
                 {
-                    Status = (int)result.StatusCode,
-                    Message = string.IsNullOrWhiteSpace(result.Message)
+                    Status = result.status,
+                    Message = string.IsNullOrWhiteSpace(result.message)
                         ? "Tienda obtenida correctamente."
-                        : result.Message,
-                    Data = result.Data,
+                        : result.message,
+                    Data = result.data,
                     Errors = Array.Empty<string>()
                 });
             }

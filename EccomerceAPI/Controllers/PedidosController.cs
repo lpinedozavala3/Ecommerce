@@ -40,26 +40,28 @@ namespace EccomerceAPI.Controllers
                 var (tiendaId, _) = await _tenantResolver.ResolveAsync(HttpContext);
                 var result = await _pedidosService.ObtenerPedidosAsync(tiendaId, clienteId);
 
-                if (!result.IsSuccess)
+                if (!result.response)
                 {
-                    var errors = result.Errors.Length > 0 ? result.Errors : new[] { result.Message };
-                    return StatusCode((int)result.StatusCode, new Response<IReadOnlyList<PedidoResumenDto>>
+                    var status = result.status;
+                    var message = string.IsNullOrWhiteSpace(result.message)
+                        ? "No se pudieron obtener los pedidos."
+                        : result.message;
+
+                    return StatusCode(status, new Response<IReadOnlyList<PedidoResumenDto>>
                     {
-                        Status = (int)result.StatusCode,
-                        Message = string.IsNullOrWhiteSpace(result.Message)
-                            ? "No se pudieron obtener los pedidos."
-                            : result.Message,
-                        Errors = errors
+                        Status = status,
+                        Message = message,
+                        Errors = new[] { message }
                     });
                 }
 
-                return StatusCode((int)result.StatusCode, new Response<IReadOnlyList<PedidoResumenDto>>
+                return StatusCode(result.status, new Response<IReadOnlyList<PedidoResumenDto>>
                 {
-                    Status = (int)result.StatusCode,
-                    Message = string.IsNullOrWhiteSpace(result.Message)
+                    Status = result.status,
+                    Message = string.IsNullOrWhiteSpace(result.message)
                         ? "Pedidos obtenidos correctamente."
-                        : result.Message,
-                    Data = result.Data,
+                        : result.message,
+                    Data = result.data,
                     Errors = Array.Empty<string>()
                 });
             }
@@ -100,26 +102,28 @@ namespace EccomerceAPI.Controllers
                 var (tiendaId, _) = await _tenantResolver.ResolveAsync(HttpContext);
                 var result = await _pedidosService.ObtenerDireccionAsync(tiendaId, clienteId);
 
-                if (!result.IsSuccess)
+                if (!result.response)
                 {
-                    var errors = result.Errors.Length > 0 ? result.Errors : new[] { result.Message };
-                    return StatusCode((int)result.StatusCode, new Response<DireccionClienteDto>
+                    var status = result.status;
+                    var message = string.IsNullOrWhiteSpace(result.message)
+                        ? "No se pudo obtener la dirección."
+                        : result.message;
+
+                    return StatusCode(status, new Response<DireccionClienteDto>
                     {
-                        Status = (int)result.StatusCode,
-                        Message = string.IsNullOrWhiteSpace(result.Message)
-                            ? "No se pudo obtener la dirección."
-                            : result.Message,
-                        Errors = errors
+                        Status = status,
+                        Message = message,
+                        Errors = new[] { message }
                     });
                 }
 
-                return StatusCode((int)result.StatusCode, new Response<DireccionClienteDto>
+                return StatusCode(result.status, new Response<DireccionClienteDto>
                 {
-                    Status = (int)result.StatusCode,
-                    Message = string.IsNullOrWhiteSpace(result.Message)
+                    Status = result.status,
+                    Message = string.IsNullOrWhiteSpace(result.message)
                         ? "Dirección obtenida correctamente."
-                        : result.Message,
-                    Data = result.Data,
+                        : result.message,
+                    Data = result.data,
                     Errors = Array.Empty<string>()
                 });
             }
@@ -175,26 +179,28 @@ namespace EccomerceAPI.Controllers
                 var (tiendaId, _) = await _tenantResolver.ResolveAsync(HttpContext);
                 var result = await _pedidosService.GuardarDireccionAsync(tiendaId, clienteId, request);
 
-                if (!result.IsSuccess)
+                if (!result.response)
                 {
-                    var errors = result.Errors.Length > 0 ? result.Errors : new[] { result.Message };
-                    return StatusCode((int)result.StatusCode, new Response<DireccionClienteDto>
+                    var status = result.status;
+                    var message = string.IsNullOrWhiteSpace(result.message)
+                        ? "No se pudo guardar la dirección."
+                        : result.message;
+
+                    return StatusCode(status, new Response<DireccionClienteDto>
                     {
-                        Status = (int)result.StatusCode,
-                        Message = string.IsNullOrWhiteSpace(result.Message)
-                            ? "No se pudo guardar la dirección."
-                            : result.Message,
-                        Errors = errors
+                        Status = status,
+                        Message = message,
+                        Errors = new[] { message }
                     });
                 }
 
-                return StatusCode((int)result.StatusCode, new Response<DireccionClienteDto>
+                return StatusCode(result.status, new Response<DireccionClienteDto>
                 {
-                    Status = (int)result.StatusCode,
-                    Message = string.IsNullOrWhiteSpace(result.Message)
+                    Status = result.status,
+                    Message = string.IsNullOrWhiteSpace(result.message)
                         ? "Dirección guardada correctamente."
-                        : result.Message,
-                    Data = result.Data,
+                        : result.message,
+                    Data = result.data,
                     Errors = Array.Empty<string>()
                 });
             }

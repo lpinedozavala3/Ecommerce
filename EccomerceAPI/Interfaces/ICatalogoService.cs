@@ -1,21 +1,20 @@
 using Database.DTOs;
 using Database.Filters;
-using EccomerceAPI.Common.Results;
 
 namespace EccomerceAPI.Interfaces
 {
     public interface ICatalogoService
     {
-        Task<ServiceResult<PagedResponse<List<ProductoDto>>>> ObtenerProductosAsync(
+        Task<(bool response, int status, string message, PagedResponse<List<ProductoDto>>? data)> ObtenerProductosAsync(
             Guid emisorId,
             ProductoFilter filter,
             PaginationFilter pagination,
             string route);
 
-        Task<ServiceResult<ProductoDetalleDto>> ObtenerDetalleAsync(Guid productoId, Guid emisorId);
+        Task<(bool response, int status, string message, ProductoDetalleDto? data)> ObtenerDetalleAsync(Guid productoId, Guid emisorId);
 
-        Task<ServiceResult<IReadOnlyDictionary<Guid, ProductoDto>>> ObtenerPorIdsAsync(IEnumerable<Guid> ids, Guid emisorId);
+        Task<(bool response, int status, string message, IReadOnlyDictionary<Guid, ProductoDto>? data)> ObtenerPorIdsAsync(IEnumerable<Guid> ids, Guid emisorId);
 
-        Task<ServiceResult<List<CategoriaDto>>> ObtenerCategoriasAsync(Guid emisorId);
+        Task<(bool response, int status, string message, List<CategoriaDto>? data)> ObtenerCategoriasAsync(Guid emisorId);
     }
 }

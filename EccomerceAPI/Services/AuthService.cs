@@ -1,12 +1,11 @@
 using System;
 using System.Linq;
-using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using Database.Models;
-using EccomerceAPI.Common.Results;
 using EccomerceAPI.Contracts.Auth;
 using EccomerceAPI.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace EccomerceAPI.Services
@@ -20,7 +19,7 @@ namespace EccomerceAPI.Services
             _db = db;
         }
 
-        public async Task<ServiceResult<AuthResponse>> RegistrarAsync(RegisterRequest request, Guid tiendaId)
+        public async Task<(bool response, int status, string message, AuthResponse? data)> RegistrarAsync(RegisterRequest request, Guid tiendaId)
         {
             try
             {
@@ -31,7 +30,7 @@ namespace EccomerceAPI.Services
 
                 if (existe)
                 {
-                    return ServiceResult<AuthResponse>.Failure("El correo ya está registrado en esta tienda.", HttpStatusCode.Conflict);
+                    return (false, StatusCodes.Status409Conflict, "El correo ya está registrado en esta tienda.", null);
                 }
 
                 var cliente = new ClienteTiendum
@@ -50,20 +49,15 @@ namespace EccomerceAPI.Services
                 _db.ClienteTienda.Add(cliente);
                 await _db.SaveChangesAsync();
 
-                return ServiceResult<AuthResponse>.Success(
-                    MapearRespuesta(cliente),
-                    HttpStatusCode.Created,
-                    "Cliente registrado correctamente.");
+                return (true, StatusCodes.Status201Created, "Cliente registrado correctamente.", MapearRespuesta(cliente));
             }
             catch
             {
-                return ServiceResult<AuthResponse>.Failure(
-                    "No se pudo completar el registro del cliente.",
-                    HttpStatusCode.InternalServerError);
+                return (false, StatusCodes.Status500InternalServerError, "No se pudo completar el registro del cliente.", null);
             }
         }
 
-        public async Task<ServiceResult<AuthResponse>> IniciarSesionAsync(LoginRequest request, Guid tiendaId)
+        public async Task<(bool response, int status, string message, AuthResponse? data)> IniciarSesionAsync(LoginRequest request, Guid tiendaId)
         {
             try
             {
@@ -73,27 +67,22 @@ namespace EccomerceAPI.Services
 
                 if (cliente is null)
                 {
-                    return ServiceResult<AuthResponse>.Failure("Credenciales inválidas.", HttpStatusCode.Unauthorized);
+                    return (false, StatusCodes.Status401Unauthorized, "Credenciales inválidas.", null);
                 }
 
                 if (cliente.HashPassword is null || !cliente.HashPassword.SequenceEqual(HashPassword(request.Password)))
                 {
-                    return ServiceResult<AuthResponse>.Failure("Credenciales inválidas.", HttpStatusCode.Unauthorized);
+                    return (false, StatusCodes.Status401Unauthorized, "Credenciales inválidas.", null);
                 }
 
                 cliente.UltimoLoginEn = DateTime.UtcNow;
                 await _db.SaveChangesAsync();
 
-                return ServiceResult<AuthResponse>.Success(
-                    MapearRespuesta(cliente),
-                    HttpStatusCode.OK,
-                    "Inicio de sesión exitoso.");
+                return (true, StatusCodes.Status200OK, "Inicio de sesión exitoso.", MapearRespuesta(cliente));
             }
             catch
             {
-                return ServiceResult<AuthResponse>.Failure(
-                    "No se pudo iniciar sesión.",
-                    HttpStatusCode.InternalServerError);
+                return (false, StatusCodes.Status500InternalServerError, "No se pudo iniciar sesión.", null);
             }
         }
 

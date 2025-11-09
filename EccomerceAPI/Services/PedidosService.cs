@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Net;
 using Database.Models;
-using EccomerceAPI.Common.Results;
 using EccomerceAPI.Contracts.Pedidos;
 using EccomerceAPI.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace EccomerceAPI.Services
@@ -39,7 +38,7 @@ namespace EccomerceAPI.Services
             _db = db;
         }
 
-        public async Task<ServiceResult<IReadOnlyList<PedidoResumenDto>>> ObtenerPedidosAsync(Guid tiendaId, Guid clienteId)
+        public async Task<(bool response, int status, string message, IReadOnlyList<PedidoResumenDto>? data)> ObtenerPedidosAsync(Guid tiendaId, Guid clienteId)
         {
             try
             {
@@ -70,20 +69,15 @@ namespace EccomerceAPI.Services
                     })
                     .ToListAsync();
 
-                return ServiceResult<IReadOnlyList<PedidoResumenDto>>.Success(
-                    pedidos,
-                    HttpStatusCode.OK,
-                    "Pedidos obtenidos correctamente.");
+                return (true, StatusCodes.Status200OK, "Pedidos obtenidos correctamente.", pedidos);
             }
             catch
             {
-                return ServiceResult<IReadOnlyList<PedidoResumenDto>>.Failure(
-                    "No se pudieron obtener los pedidos del cliente.",
-                    HttpStatusCode.InternalServerError);
+                return (false, StatusCodes.Status500InternalServerError, "No se pudieron obtener los pedidos del cliente.", null);
             }
         }
 
-        public async Task<ServiceResult<DireccionClienteDto>> ObtenerDireccionAsync(Guid tiendaId, Guid clienteId)
+        public async Task<(bool response, int status, string message, DireccionClienteDto? data)> ObtenerDireccionAsync(Guid tiendaId, Guid clienteId)
         {
             try
             {
@@ -95,25 +89,18 @@ namespace EccomerceAPI.Services
 
                 if (direccion is null)
                 {
-                    return ServiceResult<DireccionClienteDto>.Failure(
-                        "El cliente no tiene una dirección registrada.",
-                        HttpStatusCode.NotFound);
+                    return (false, StatusCodes.Status404NotFound, "El cliente no tiene una dirección registrada.", null);
                 }
 
-                return ServiceResult<DireccionClienteDto>.Success(
-                    direccion,
-                    HttpStatusCode.OK,
-                    "Dirección obtenida correctamente.");
+                return (true, StatusCodes.Status200OK, "Dirección obtenida correctamente.", direccion);
             }
             catch
             {
-                return ServiceResult<DireccionClienteDto>.Failure(
-                    "No se pudo obtener la dirección del cliente.",
-                    HttpStatusCode.InternalServerError);
+                return (false, StatusCodes.Status500InternalServerError, "No se pudo obtener la dirección del cliente.", null);
             }
         }
 
-        public async Task<ServiceResult<DireccionClienteDto>> GuardarDireccionAsync(Guid tiendaId, Guid clienteId, UpsertDireccionRequest request)
+        public async Task<(bool response, int status, string message, DireccionClienteDto? data)> GuardarDireccionAsync(Guid tiendaId, Guid clienteId, UpsertDireccionRequest request)
         {
             try
             {
@@ -123,9 +110,7 @@ namespace EccomerceAPI.Services
 
                 if (cliente is null)
                 {
-                    return ServiceResult<DireccionClienteDto>.Failure(
-                        "No se encontró el cliente para la tienda actual.",
-                        HttpStatusCode.NotFound);
+                    return (false, StatusCodes.Status404NotFound, "No se encontró el cliente para la tienda actual.", null);
                 }
 
                 var ahora = DateTime.UtcNow;
@@ -171,20 +156,15 @@ namespace EccomerceAPI.Services
 
                 await _db.SaveChangesAsync();
 
-                return ServiceResult<DireccionClienteDto>.Success(
-                    MapDireccion(cliente.DireccionCliente!),
-                    HttpStatusCode.OK,
-                    "Dirección guardada correctamente.");
+                return (true, StatusCodes.Status200OK, "Dirección guardada correctamente.", MapDireccion(cliente.DireccionCliente!));
             }
             catch (InvalidOperationException ex)
             {
-                return ServiceResult<DireccionClienteDto>.Failure(ex.Message, HttpStatusCode.NotFound);
+                return (false, StatusCodes.Status404NotFound, ex.Message, null);
             }
             catch
             {
-                return ServiceResult<DireccionClienteDto>.Failure(
-                    "No se pudo guardar la dirección del cliente.",
-                    HttpStatusCode.InternalServerError);
+                return (false, StatusCodes.Status500InternalServerError, "No se pudo guardar la dirección del cliente.", null);
             }
         }
 

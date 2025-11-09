@@ -1,11 +1,10 @@
-using EccomerceAPI.Common.Results;
 using EccomerceAPI.Contracts.Auth;
 
 namespace EccomerceAPI.Interfaces
 {
     public interface IAuthService
     {
-        Task<ServiceResult<AuthResponse>> RegistrarAsync(RegisterRequest request, Guid tiendaId);
-        Task<ServiceResult<AuthResponse>> IniciarSesionAsync(LoginRequest request, Guid tiendaId);
+        Task<(bool response, int status, string message, AuthResponse? data)> RegistrarAsync(RegisterRequest request, Guid tiendaId);
+        Task<(bool response, int status, string message, AuthResponse? data)> IniciarSesionAsync(LoginRequest request, Guid tiendaId);
     }
 }

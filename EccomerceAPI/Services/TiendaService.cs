@@ -1,11 +1,10 @@
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Database.DTOs;
 using Database.Models;
-using EccomerceAPI.Common.Results;
 using EccomerceAPI.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace EccomerceAPI.Services
@@ -19,11 +18,11 @@ namespace EccomerceAPI.Services
             _db = db;
         }
 
-        public async Task<ServiceResult<TenantInfoDto>> ObtenerPorNombreFantasiaAsync(string nombreFantasia, CancellationToken cancellationToken = default)
+        public async Task<(bool response, int status, string message, TenantInfoDto? data)> ObtenerPorNombreFantasiaAsync(string nombreFantasia, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(nombreFantasia))
             {
-                return ServiceResult<TenantInfoDto>.Failure("El nombre de fantasía es obligatorio.", HttpStatusCode.BadRequest);
+                return (false, StatusCodes.Status400BadRequest, "El nombre de fantasía es obligatorio.", null);
             }
 
             try
@@ -46,19 +45,14 @@ namespace EccomerceAPI.Services
 
                 if (tenant is null)
                 {
-                    return ServiceResult<TenantInfoDto>.Failure("La tienda solicitada no existe.", HttpStatusCode.NotFound);
+                    return (false, StatusCodes.Status404NotFound, "La tienda solicitada no existe.", null);
                 }
 
-                return ServiceResult<TenantInfoDto>.Success(
-                    tenant,
-                    HttpStatusCode.OK,
-                    "Tienda obtenida correctamente.");
+                return (true, StatusCodes.Status200OK, "Tienda obtenida correctamente.", tenant);
             }
             catch
             {
-                return ServiceResult<TenantInfoDto>.Failure(
-                    "No se pudo obtener la información de la tienda.",
-                    HttpStatusCode.InternalServerError);
+                return (false, StatusCodes.Status500InternalServerError, "No se pudo obtener la información de la tienda.", null);
             }
         }
     }

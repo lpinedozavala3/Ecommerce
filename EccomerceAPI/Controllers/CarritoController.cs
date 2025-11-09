@@ -28,26 +28,28 @@ namespace EccomerceAPI.Controllers
                 var (_, emisorId) = await _tenantResolver.ResolveAsync(HttpContext);
                 var result = await _carritoService.ObtenerResumenAsync(emisorId, request);
 
-                if (!result.IsSuccess)
+                if (!result.response)
                 {
-                    var errors = result.Errors.Length > 0 ? result.Errors : new[] { result.Message };
-                    return StatusCode((int)result.StatusCode, new Response<CartSummaryResponse>
+                    var status = result.status;
+                    var message = string.IsNullOrWhiteSpace(result.message)
+                        ? "No se pudo calcular el resumen del carrito."
+                        : result.message;
+
+                    return StatusCode(status, new Response<CartSummaryResponse>
                     {
-                        Status = (int)result.StatusCode,
-                        Message = string.IsNullOrWhiteSpace(result.Message)
-                            ? "No se pudo calcular el resumen del carrito."
-                            : result.Message,
-                        Errors = errors
+                        Status = status,
+                        Message = message,
+                        Errors = new[] { message }
                     });
                 }
 
-                return StatusCode((int)result.StatusCode, new Response<CartSummaryResponse>
+                return StatusCode(result.status, new Response<CartSummaryResponse>
                 {
-                    Status = (int)result.StatusCode,
-                    Message = string.IsNullOrWhiteSpace(result.Message)
+                    Status = result.status,
+                    Message = string.IsNullOrWhiteSpace(result.message)
                         ? "Resumen del carrito calculado correctamente."
-                        : result.Message,
-                    Data = result.Data,
+                        : result.message,
+                    Data = result.data,
                     Errors = Array.Empty<string>()
                 });
             }

@@ -28,26 +28,28 @@ namespace EccomerceAPI.Controllers
                 var (tiendaId, _) = await _tenantResolver.ResolveAsync(HttpContext);
                 var result = await _authService.RegistrarAsync(request, tiendaId);
 
-                if (!result.IsSuccess)
+                if (!result.response)
                 {
-                    var errors = result.Errors.Length > 0 ? result.Errors : new[] { result.Message };
-                    return StatusCode((int)result.StatusCode, new Response<AuthResponse>
+                    var status = result.status;
+                    var message = string.IsNullOrWhiteSpace(result.message)
+                        ? "No se pudo registrar al cliente."
+                        : result.message;
+
+                    return StatusCode(status, new Response<AuthResponse>
                     {
-                        Status = (int)result.StatusCode,
-                        Message = string.IsNullOrWhiteSpace(result.Message)
-                            ? "No se pudo registrar al cliente."
-                            : result.Message,
-                        Errors = errors
+                        Status = status,
+                        Message = message,
+                        Errors = new[] { message }
                     });
                 }
 
-                return StatusCode((int)result.StatusCode, new Response<AuthResponse>
+                return StatusCode(result.status, new Response<AuthResponse>
                 {
-                    Status = (int)result.StatusCode,
-                    Message = string.IsNullOrWhiteSpace(result.Message)
+                    Status = result.status,
+                    Message = string.IsNullOrWhiteSpace(result.message)
                         ? "Cliente registrado correctamente."
-                        : result.Message,
-                    Data = result.Data,
+                        : result.message,
+                    Data = result.data,
                     Errors = Array.Empty<string>()
                 });
             }
@@ -78,26 +80,28 @@ namespace EccomerceAPI.Controllers
                 var (tiendaId, _) = await _tenantResolver.ResolveAsync(HttpContext);
                 var result = await _authService.IniciarSesionAsync(request, tiendaId);
 
-                if (!result.IsSuccess)
+                if (!result.response)
                 {
-                    var errors = result.Errors.Length > 0 ? result.Errors : new[] { result.Message };
-                    return StatusCode((int)result.StatusCode, new Response<AuthResponse>
+                    var status = result.status;
+                    var message = string.IsNullOrWhiteSpace(result.message)
+                        ? "No se pudo iniciar sesión."
+                        : result.message;
+
+                    return StatusCode(status, new Response<AuthResponse>
                     {
-                        Status = (int)result.StatusCode,
-                        Message = string.IsNullOrWhiteSpace(result.Message)
-                            ? "No se pudo iniciar sesión."
-                            : result.Message,
-                        Errors = errors
+                        Status = status,
+                        Message = message,
+                        Errors = new[] { message }
                     });
                 }
 
-                return StatusCode((int)result.StatusCode, new Response<AuthResponse>
+                return StatusCode(result.status, new Response<AuthResponse>
                 {
-                    Status = (int)result.StatusCode,
-                    Message = string.IsNullOrWhiteSpace(result.Message)
+                    Status = result.status,
+                    Message = string.IsNullOrWhiteSpace(result.message)
                         ? "Inicio de sesión exitoso."
-                        : result.Message,
-                    Data = result.Data,
+                        : result.message,
+                    Data = result.data,
                     Errors = Array.Empty<string>()
                 });
             }

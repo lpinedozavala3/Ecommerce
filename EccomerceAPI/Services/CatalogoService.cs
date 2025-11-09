@@ -1,10 +1,9 @@
-using System.Net;
 using Database.DTOs;
 using Database.Filters;
 using Database.Models;
-using EccomerceAPI.Common.Results;
 using EccomerceAPI.Helpers;
 using EccomerceAPI.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace EccomerceAPI.Services
@@ -20,7 +19,7 @@ namespace EccomerceAPI.Services
             _uriService = uriService;
         }
 
-        public async Task<ServiceResult<PagedResponse<List<ProductoDto>>>> ObtenerProductosAsync(
+        public async Task<(bool response, int status, string message, PagedResponse<List<ProductoDto>>? data)> ObtenerProductosAsync(
             Guid emisorId,
             ProductoFilter filter,
             PaginationFilter pagination,
@@ -68,20 +67,15 @@ namespace EccomerceAPI.Services
                     .ToListAsync();
 
                 var response = PaginationHelper.CreatePagedReponse(items, validFilter, total, _uriService, route);
-                return ServiceResult<PagedResponse<List<ProductoDto>>>.Success(
-                    response,
-                    HttpStatusCode.OK,
-                    "Productos obtenidos correctamente.");
+                return (true, StatusCodes.Status200OK, "Productos obtenidos correctamente.", response);
             }
             catch
             {
-                return ServiceResult<PagedResponse<List<ProductoDto>>>.Failure(
-                    "No se pudo obtener el listado de productos.",
-                    HttpStatusCode.InternalServerError);
+                return (false, StatusCodes.Status500InternalServerError, "No se pudo obtener el listado de productos.", null);
             }
         }
 
-        public async Task<ServiceResult<ProductoDetalleDto>> ObtenerDetalleAsync(Guid productoId, Guid emisorId)
+        public async Task<(bool response, int status, string message, ProductoDetalleDto? data)> ObtenerDetalleAsync(Guid productoId, Guid emisorId)
         {
             try
             {
@@ -118,25 +112,18 @@ namespace EccomerceAPI.Services
 
                 if (detalle is null)
                 {
-                    return ServiceResult<ProductoDetalleDto>.Failure(
-                        "El producto solicitado no existe.",
-                        HttpStatusCode.NotFound);
+                    return (false, StatusCodes.Status404NotFound, "El producto solicitado no existe.", null);
                 }
 
-                return ServiceResult<ProductoDetalleDto>.Success(
-                    detalle,
-                    HttpStatusCode.OK,
-                    "Detalle del producto obtenido correctamente.");
+                return (true, StatusCodes.Status200OK, "Detalle del producto obtenido correctamente.", detalle);
             }
             catch
             {
-                return ServiceResult<ProductoDetalleDto>.Failure(
-                    "No se pudo obtener el detalle del producto.",
-                    HttpStatusCode.InternalServerError);
+                return (false, StatusCodes.Status500InternalServerError, "No se pudo obtener el detalle del producto.", null);
             }
         }
 
-        public async Task<ServiceResult<IReadOnlyDictionary<Guid, ProductoDto>>> ObtenerPorIdsAsync(IEnumerable<Guid> ids, Guid emisorId)
+        public async Task<(bool response, int status, string message, IReadOnlyDictionary<Guid, ProductoDto>? data)> ObtenerPorIdsAsync(IEnumerable<Guid> ids, Guid emisorId)
         {
             try
             {
@@ -168,20 +155,15 @@ namespace EccomerceAPI.Services
                                 .ToList(),
                         });
 
-                return ServiceResult<IReadOnlyDictionary<Guid, ProductoDto>>.Success(
-                    productos,
-                    HttpStatusCode.OK,
-                    "Productos obtenidos correctamente.");
+                return (true, StatusCodes.Status200OK, "Productos obtenidos correctamente.", productos);
             }
             catch
             {
-                return ServiceResult<IReadOnlyDictionary<Guid, ProductoDto>>.Failure(
-                    "No se pudieron obtener los productos solicitados.",
-                    HttpStatusCode.InternalServerError);
+                return (false, StatusCodes.Status500InternalServerError, "No se pudieron obtener los productos solicitados.", null);
             }
         }
 
-        public async Task<ServiceResult<List<CategoriaDto>>> ObtenerCategoriasAsync(Guid emisorId)
+        public async Task<(bool response, int status, string message, List<CategoriaDto>? data)> ObtenerCategoriasAsync(Guid emisorId)
         {
             try
             {
@@ -198,16 +180,11 @@ namespace EccomerceAPI.Services
                     .OrderBy(c => c.NombreCategoria)
                     .ToListAsync();
 
-                return ServiceResult<List<CategoriaDto>>.Success(
-                    categorias,
-                    HttpStatusCode.OK,
-                    "Categorías obtenidas correctamente.");
+                return (true, StatusCodes.Status200OK, "Categorías obtenidas correctamente.", categorias);
             }
             catch
             {
-                return ServiceResult<List<CategoriaDto>>.Failure(
-                    "No se pudieron obtener las categorías.",
-                    HttpStatusCode.InternalServerError);
+                return (false, StatusCodes.Status500InternalServerError, "No se pudieron obtener las categorías.", null);
             }
         }
     }

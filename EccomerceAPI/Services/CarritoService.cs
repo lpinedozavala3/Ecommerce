@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using Database.DTOs;
-using EccomerceAPI.Common.Results;
 using EccomerceAPI.Contracts.Carrito;
 using EccomerceAPI.Interfaces;
+using Microsoft.AspNetCore.Http;
 
 namespace EccomerceAPI.Services
 {
@@ -21,30 +20,25 @@ namespace EccomerceAPI.Services
             _catalogoService = catalogoService;
         }
 
-        public async Task<ServiceResult<CartSummaryResponse>> ObtenerResumenAsync(Guid emisorId, CartSummaryRequest request)
+        public async Task<(bool response, int status, string message, CartSummaryResponse? data)> ObtenerResumenAsync(Guid emisorId, CartSummaryRequest request)
         {
             if (request?.Items is null || request.Items.Count == 0)
             {
-                return ServiceResult<CartSummaryResponse>.Failure(
-                    "El carrito está vacío.",
-                    HttpStatusCode.BadRequest);
+                return (false, StatusCodes.Status400BadRequest, "El carrito está vacío.", null);
             }
 
             try
             {
                 var ids = request.Items.Select(i => i.ProductoId);
                 var productosResult = await _catalogoService.ObtenerPorIdsAsync(ids, emisorId);
-                if (!productosResult.IsSuccess)
+                if (!productosResult.response)
                 {
-                    return ServiceResult<CartSummaryResponse>.Failure(
-                        string.IsNullOrWhiteSpace(productosResult.Message)
-                            ? "No se pudieron obtener los productos del catálogo."
-                            : productosResult.Message,
-                        productosResult.StatusCode,
-                        productosResult.Errors);
+                    return (false, productosResult.status, string.IsNullOrWhiteSpace(productosResult.message)
+                        ? "No se pudieron obtener los productos del catálogo."
+                        : productosResult.message, null);
                 }
 
-                var productos = productosResult.Data ?? new Dictionary<Guid, ProductoDto>();
+                var productos = productosResult.data ?? new Dictionary<Guid, ProductoDto>();
                 var response = new CartSummaryResponse();
 
                 foreach (var item in request.Items)
@@ -91,22 +85,15 @@ namespace EccomerceAPI.Services
 
                 if (response.Items.Count == 0)
                 {
-                    return ServiceResult<CartSummaryResponse>.Failure(
-                        "Ninguno de los productos está disponible.",
-                        HttpStatusCode.BadRequest);
+                    return (false, StatusCodes.Status400BadRequest, "Ninguno de los productos está disponible.", null);
                 }
 
                 response.Envio = CostoEnvio;
-                return ServiceResult<CartSummaryResponse>.Success(
-                    response,
-                    HttpStatusCode.OK,
-                    "Resumen del carrito calculado correctamente.");
+                return (true, StatusCodes.Status200OK, "Resumen del carrito calculado correctamente.", response);
             }
             catch
             {
-                return ServiceResult<CartSummaryResponse>.Failure(
-                    "No se pudo calcular el resumen del carrito.",
-                    HttpStatusCode.InternalServerError);
+                return (false, StatusCodes.Status500InternalServerError, "No se pudo calcular el resumen del carrito.", null);
             }
         }
     }
