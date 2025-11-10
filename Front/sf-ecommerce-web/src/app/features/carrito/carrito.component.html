@@ -15,7 +15,7 @@
       <mat-card-content>
         <article class="item" *ngFor="let item of items; trackBy: trackById">
           <div class="thumb" [ngClass]="{ 'sin-imagen': !item.imagenBase64 }">
-            <img *ngIf="item.imagenBase64" [src]="'data:image/png;base64,' + item.imagenBase64" [alt]="item.nombre" />
+            <img *ngIf="item.imagenBase64" [src]="item.imagenBase64" [alt]="item.nombre" />
             <mat-icon *ngIf="!item.imagenBase64">image</mat-icon>
           </div>
 

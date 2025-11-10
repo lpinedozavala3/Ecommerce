@@ -56,7 +56,7 @@
         <button type="button" (click)="verDetalle(producto)">
           <img
             *ngIf="producto.imagenBase64; else novedadNoImg"
-            [src]="'data:image/png;base64,' + producto.imagenBase64"
+            [src]="producto.imagenBase64"
             [alt]="producto.nombrePublico || 'Producto'"
             loading="lazy"
           />
@@ -123,7 +123,7 @@
         <button type="button" class="image-btn" (click)="verDetalle(p)">
           <img
             *ngIf="p.imagenBase64; else noImg"
-            [src]="'data:image/png;base64,' + p.imagenBase64"
+            [src]="p.imagenBase64"
             [alt]="p.nombrePublico || 'Producto'"
             loading="lazy"
           />

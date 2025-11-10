@@ -18,7 +18,7 @@ const string CorsPolicy = "CorsPolicy";
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(CorsPolicy, p =>
-        p.WithOrigins("http://localhost:4200", "https://localhost:4200")
+        p.WithOrigins("http://localhost:4200", "https://localhost:4200", "http://localhost:60151")
          .AllowAnyMethod()   // incluye OPTIONS
          .AllowAnyHeader()); // permite X-Store-Name, etc.
 });

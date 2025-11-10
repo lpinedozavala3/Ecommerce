@@ -17,7 +17,7 @@
         <button type="button" (click)="verDetalle(producto)">
           <img
             *ngIf="producto.imagenBase64; else noImagen"
-            [src]="'data:image/png;base64,' + producto.imagenBase64"
+            [src]="producto.imagenBase64"
             [alt]="producto.nombrePublico || 'Producto'"
             loading="lazy"
           />
