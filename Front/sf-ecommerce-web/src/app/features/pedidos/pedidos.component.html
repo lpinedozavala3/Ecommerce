@@ -53,8 +53,8 @@
         </div>
 
         <ng-template #pedidosFallback>
-          <div class="pedidos__skeleton" *ngIf="cargandoPedidos">
-            <div class="skeleton-card" *ngFor="let _ of [].constructor(2)"></div>
+          <div class="pedidos__loading" *ngIf="cargandoPedidos">
+            <app-loading message="Cargando pedidos..."></app-loading>
           </div>
           <div class="pedidos__empty" *ngIf="!cargandoPedidos && !pedidos.length">Aún no registramos pedidos en tu cuenta.</div>
         </ng-template>
@@ -159,7 +159,12 @@
 
                 <div style="display:flex;align-items:center;gap:1rem;">
                   <button mat-flat-button color="primary" type="submit" [disabled]="cargandoDireccion">
-                    <mat-progress-spinner *ngIf="cargandoDireccion" diameter="18" mode="indeterminate" color="primary"></mat-progress-spinner>
+                    <app-loading
+                      *ngIf="cargandoDireccion"
+                      size="sm"
+                      [inline]="true"
+                      ariaLabel="Guardando dirección"
+                    ></app-loading>
                     <span *ngIf="!cargandoDireccion">Guardar cambios</span>
                   </button>
                   <button mat-stroked-button type="button" (click)="closeDialog()">Cancelar</button>

@@ -95,12 +95,8 @@
 
   <ng-template #novedadesFallback>
     <div class="novedades-empty" *ngIf="!loadingNovedades">No hay novedades disponibles por ahora.</div>
-    <div class="novedades-skeleton" *ngIf="loadingNovedades">
-      <div class="skeleton-card" *ngFor="let _ of [].constructor(4)">
-        <div class="sk-img shimmer"></div>
-        <div class="sk-line shimmer"></div>
-        <div class="sk-line short shimmer"></div>
-      </div>
+    <div class="novedades-loading" *ngIf="loadingNovedades">
+      <app-loading message="Cargando novedades..."></app-loading>
     </div>
   </ng-template>
 </section>
@@ -171,13 +167,8 @@
 
   <ng-template #catalogoFallback>
     <div class="catalogo-empty" *ngIf="!loadingProductos">No encontramos productos que coincidan con tu búsqueda.</div>
-    <div class="catalogo-skeleton" *ngIf="loadingProductos">
-      <div class="skeleton-card" *ngFor="let _ of [].constructor(page.pageSize)">
-        <div class="sk-img shimmer"></div>
-        <div class="sk-line shimmer"></div>
-        <div class="sk-line short shimmer"></div>
-        <div class="sk-btn shimmer"></div>
-      </div>
+    <div class="catalogo-loading" *ngIf="loadingProductos">
+      <app-loading message="Cargando productos..."></app-loading>
     </div>
   </ng-template>
 

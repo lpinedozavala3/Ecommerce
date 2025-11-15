@@ -125,8 +125,7 @@
 
   <ng-template #catalogoStates>
     <div class="catalogo-loading" *ngIf="loadingProductos">
-      <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
-      <span>Cargando productos…</span>
+      <app-loading message="Cargando productos..." size="lg"></app-loading>
     </div>
 
     <div class="catalogo-empty" *ngIf="!loadingProductos">
