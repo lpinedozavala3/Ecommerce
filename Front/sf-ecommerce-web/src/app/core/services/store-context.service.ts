@@ -69,8 +69,8 @@ export class StoreContextService {
         }),
         tap((info: TenantInfo) => {
           this.lastFailedStoreName = null;
-          // Solo asignar currentStoreName si la tienda existe
-          this.currentStoreName = sanitized;
+          // Usar nombreFantasia del backend (con mayúsculas correctas)
+          this.currentStoreName = info.nombreFantasia || sanitized;
           this.storeInfoSubject.next(info);
         }),
         catchError(error => {

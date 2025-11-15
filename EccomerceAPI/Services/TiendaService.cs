@@ -28,7 +28,7 @@ namespace EccomerceAPI.Services
 
             return await _db.Tienda
                 .AsNoTracking()
-                .Where(t => t.NombreFantasia != null && t.NombreFantasia.ToLower() == normalized && t.EstadoTienda == "ACTIVA")
+                .Where(t => t.NombreFantasia != null && t.NombreFantasia.ToLower() == normalized && t.EstadoTienda == true)
                 .Select(t => new TenantInfoDto
                 {
                     TiendaId = t.IdTienda,

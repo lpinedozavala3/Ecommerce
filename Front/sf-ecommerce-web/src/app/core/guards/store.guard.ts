@@ -16,7 +16,15 @@ export class StoreGuard implements CanActivate, CanActivateChild {
     }
 
     return this.storeContext.ensureStore(storeName).pipe(
-      map(() => true),
+      map((tenantInfo) => {
+        // Si el nombreFantasia devuelto por el backend es diferente al de la URL, redirigir
+        if (tenantInfo.nombreFantasia && tenantInfo.nombreFantasia !== storeName) {
+          // Reemplazar el segmento de la tienda en la URL actual
+          const urlWithCorrectStore = state.url.replace(`/${storeName}/`, `/${tenantInfo.nombreFantasia}/`);
+          return this.router.createUrlTree([urlWithCorrectStore.substring(1)]);
+        }
+        return true;
+      }),
       catchError(() => {
         this.storeContext.clearStore({ preserveFailure: true });
         return of(this.router.createUrlTree(['/pagina-no-encontrada']));

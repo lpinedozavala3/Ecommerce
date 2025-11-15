@@ -14,6 +14,7 @@ namespace Database.Filters
         public Guid? CategoriaId { get; set; }
         public Guid? EmisorId { get; set; }
         public bool? VisibleEnTienda { get; set; } = true;
+        public bool? EsActivo { get; set; } = true;
         public bool? EsNovedad { get; set; }
 
         private Expression<Func<Producto, bool>> FiltroEmisor()
@@ -40,13 +41,18 @@ namespace Database.Filters
             if (!EsNovedad.HasValue) return p => true;
             return p => p.Novedad == EsNovedad.Value;
         }
-
+        private Expression<Func<Producto, bool>> FiltroActivo()
+        {
+            if (!EsNovedad.HasValue) return p => true;
+            return p => p.Activo == EsActivo.Value;
+        }
         public Expression<Func<Producto, bool>> BuildFilter()
             => FiltroEmisor()
                 .And(FiltroVisible())
                 .And(FiltroTexto())
                 .And(FiltroCategoria())
-                .And(FiltroNovedad());
+                .And(FiltroNovedad())
+                .And(FiltroActivo());
     }
     internal static class ExprExtensions
     {

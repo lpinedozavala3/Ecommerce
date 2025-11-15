@@ -22,6 +22,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   categorias: Categoria[] = [];
   searchControl = new FormControl('');
   selectedCategoriaId: string | null = null;
+  storeName: string = 'Mi Tienda';
 
   private subs: Subscription[] = [];
   private currentStoreId: string | null = null;
@@ -48,8 +49,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
         if (!info) {
           this.categorias = [];
           this.currentStoreId = null;
+          this.storeName = 'Mi Tienda';
           return;
         }
+
+        // Actualizar el nombre de la tienda del backend
+        this.storeName = info.nombreFantasia || 'Mi Tienda';
 
         const tiendaIdStr = String(info.tiendaId);
         if (tiendaIdStr !== this.currentStoreId) {

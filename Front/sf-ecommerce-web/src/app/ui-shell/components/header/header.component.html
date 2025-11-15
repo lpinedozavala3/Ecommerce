@@ -5,28 +5,10 @@
         <mat-icon>storefront</mat-icon>
       </span>
       <span class="brand__copy">
-        <strong>Mi Tienda</strong>
-        <small>Tienda minimalista</small>
+        <strong>{{ storeName }}</strong>
+        <small>Tienda online</small>
       </span>
     </a>
-
-    <form class="search" (ngSubmit)="submitSearch()">
-      <mat-form-field appearance="outline">
-        <mat-icon matPrefix>search</mat-icon>
-        <mat-label>Buscar productos</mat-label>
-        <input matInput [formControl]="searchControl" placeholder="Auriculares, mouse, regalos…" />
-        <button
-          mat-icon-button
-          matSuffix
-          type="button"
-          *ngIf="searchControl.value"
-          (click)="clearSearch($event)"
-          aria-label="Limpiar búsqueda"
-        >
-          <mat-icon>close</mat-icon>
-        </button>
-      </mat-form-field>
-    </form>
 
     <div class="app-header__actions">
       <a class="action-link" mat-stroked-button color="primary" [routerLink]="store.storeLink('pedidos')">
