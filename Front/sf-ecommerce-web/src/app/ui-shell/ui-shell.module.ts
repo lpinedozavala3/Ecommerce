@@ -14,7 +14,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatMenuModule } from '@angular/material/menu';
-import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -32,8 +31,7 @@ import { SharedModule } from '../shared/shared.module';
     MatInputModule,
     MatCardModule,
     MatMenuModule,
-    ReactiveFormsModule,
-    SharedModule
+    ReactiveFormsModule
 ],
   exports: [
     AppShellComponent   // ✅ esto permite usar <app-app-shell> fuera del módulo

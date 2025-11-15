@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UiShellModule } from './ui-shell/ui-shell.module';
 import { TenantInterceptor } from './core/tenant.interceptor';
+import { SharedModule } from './shared/shared.module';
 @NgModule({
   declarations: [
     AppComponent
@@ -16,7 +17,8 @@ import { TenantInterceptor } from './core/tenant.interceptor';
     HttpClientModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    UiShellModule
+    UiShellModule,
+    SharedModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: TenantInterceptor, multi: true }

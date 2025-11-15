@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { StoreContextService } from './core/services/store-context.service';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs';
 export class AppComponent implements OnInit, OnDestroy {
   title = 'sf-ecommerce-web';
   private subscription: Subscription | null = null;
+  storeLoading$: Observable<boolean> = this.storeContext.storeLoading$;
 
   constructor(private titleService: Title, private storeContext: StoreContextService) {}
 
