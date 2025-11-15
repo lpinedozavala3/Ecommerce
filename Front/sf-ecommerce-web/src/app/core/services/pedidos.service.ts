@@ -1,10 +1,11 @@
-import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
 import { DireccionCliente, PedidoResumen, UpsertDireccionPayload } from '../models/pedidos';
+import { ApiResponse } from '../models/api-response';
 
 @Injectable({ providedIn: 'root' })
 export class PedidosService {
@@ -14,18 +15,30 @@ export class PedidosService {
 
   obtenerPedidos(clienteId: string): Observable<PedidoResumen[]> {
     const params = new HttpParams().set('clienteId', clienteId);
-    return this.http.get<PedidoResumen[]>(this.baseUrl, { params });
+    return this.http
+      .get<ApiResponse<PedidoResumen[]>>(this.baseUrl, { params })
+      .pipe(map(resp => resp.data ?? []));
   }
 
   obtenerDireccion(clienteId: string): Observable<DireccionCliente | null> {
     const params = new HttpParams().set('clienteId', clienteId);
     return this.http
-      .get<DireccionCliente>(`${this.baseUrl}/direccion`, { params, observe: 'response' })
-      .pipe(map((resp: HttpResponse<DireccionCliente>) => resp.body ?? null));
+      .get<ApiResponse<DireccionCliente>>(`${this.baseUrl}/direccion`, { params })
+      .pipe(
+        map(resp => resp.data ?? null),
+        catchError((error: HttpErrorResponse) => {
+          if (error.status === 404) {
+            return of(null);
+          }
+          return throwError(() => error);
+        })
+      );
   }
 
   guardarDireccion(clienteId: string, payload: UpsertDireccionPayload): Observable<DireccionCliente> {
     const params = new HttpParams().set('clienteId', clienteId);
-    return this.http.put<DireccionCliente>(`${this.baseUrl}/direccion`, payload, { params });
+    return this.http
+      .put<ApiResponse<DireccionCliente>>(`${this.baseUrl}/direccion`, payload, { params })
+      .pipe(map(resp => resp.data));
   }
 }

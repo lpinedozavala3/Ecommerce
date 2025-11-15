@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { StoreContextService } from 'src/app/core/services/store-context.service';
 
 @Component({
   selector: 'app-footer',
@@ -6,10 +7,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./footer.component.scss']
 })
 export class FooterComponent implements OnInit {
+  storeName: string = 'Mi Tienda';
 
-  constructor() { }
+  constructor(public store: StoreContextService) { }
 
   ngOnInit(): void {
+    this.store.storeInfo$.subscribe(info => {
+      if (info) {
+        this.storeName = info.nombreFantasia || 'Mi Tienda';
+      }
+    });
   }
 
 }

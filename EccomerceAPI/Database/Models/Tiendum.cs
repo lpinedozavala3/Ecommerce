@@ -15,12 +15,12 @@ namespace Database.Models
         public Guid IdTienda { get; set; }
         public Guid IdEmisor { get; set; }
         public string NombreComercial { get; set; } = null!;
-        public string EstadoTienda { get; set; } = null!;
         public Guid IdPlantilla { get; set; }
         public string? JsonBranding { get; set; }
         public DateTime CreadoEn { get; set; }
         public DateTime ActualizadoEn { get; set; }
         public string? NombreFantasia { get; set; }
+        public bool? EstadoTienda { get; set; }
 
         public virtual Emisor IdEmisorNavigation { get; set; } = null!;
         public virtual Plantilla IdPlantillaNavigation { get; set; } = null!;

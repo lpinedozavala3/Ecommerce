@@ -9,6 +9,7 @@ import { ProductoFilter } from 'src/app/core/models/Filters/ProductoFilter';
 import { PagedResponse } from 'src/app/core/models/Paged';
 import { Categoria } from 'src/app/core/models/Categoria.';
 import { Subscription, timer } from 'rxjs';
+import { StoreContextService } from 'src/app/core/services/store-context.service';
 
 @Component({
   selector: 'app-inicio',
@@ -58,7 +59,8 @@ export class InicioComponent implements OnInit, OnDestroy {
     private carrito: CarritoService,
     private ref: ChangeDetectorRef,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public store: StoreContextService
   ) { this.starterPage(); }
 
   ngOnInit(): void {
@@ -156,14 +158,14 @@ export class InicioComponent implements OnInit, OnDestroy {
   }
 
   selectCategoria(cat: Categoria): void {
-    this.router.navigate(['/inicio'], {
+    this.router.navigate(this.store.storeLink('inicio'), {
       queryParams: { categoria: cat.idCategoria, page: 1 },
       queryParamsHandling: 'merge'
     });
   }
 
   onHeroCta(): void {
-    this.router.navigate(['/novedades']);
+    this.router.navigate(this.store.storeLink('novedades'));
   }
 
   private startAutoSlide(): void {
@@ -203,6 +205,6 @@ export class InicioComponent implements OnInit, OnDestroy {
   }
 
   verDetalle(p: Producto) {
-    this.router.navigate(['/producto', p.productoId]);
+    this.router.navigate(this.store.storeLink('producto', p.productoId));
   }
 }

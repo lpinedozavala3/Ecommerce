@@ -187,7 +187,7 @@
         <p class="eyebrow">Mi panel</p>
         <h1>Inicia sesión para ver tus pedidos</h1>
         <p>Necesitamos que te identifiques para mostrarte el historial de compras y tu dirección de despacho.</p>
-        <a mat-flat-button color="primary" routerLink="/auth/login">
+        <a mat-flat-button color="primary" [routerLink]="store.storeLink('auth', 'login')">
           <mat-icon>login</mat-icon>
           Ir a iniciar sesión
         </a>

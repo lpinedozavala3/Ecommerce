@@ -5,6 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { AuthService } from 'src/app/core/services/auth.service';
 import { AuthStateService } from 'src/app/core/services/auth-state.service';
+import { StoreContextService } from 'src/app/core/services/store-context.service';
 
 @Component({
   selector: 'app-registro',
@@ -27,6 +28,7 @@ export class RegistroComponent {
     private auth: AuthService,
     private authState: AuthStateService,
     private snack: MatSnackBar,
+    public store: StoreContextService,
     private router: Router
   ) {}
 
@@ -50,7 +52,7 @@ export class RegistroComponent {
         this.loading = false;
         this.authState.iniciarSesion(resp, true);
         this.snack.open('¡Registro exitoso! Ya puedes comprar.', undefined, { duration: 2500 });
-        this.router.navigate(['/inicio']);
+        this.router.navigate(this.store.storeLink('inicio'));
       },
       error: err => {
         this.loading = false;

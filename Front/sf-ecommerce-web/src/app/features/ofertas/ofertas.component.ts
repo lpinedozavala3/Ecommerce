@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { StoreContextService } from 'src/app/core/services/store-context.service';
 
 @Component({
   selector: 'app-ofertas',
@@ -6,6 +7,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./ofertas.component.scss']
 })
 export class OfertasComponent {
+  constructor(public store: StoreContextService) {}
   destacados = [
     {
       titulo: 'Bundles esenciales para tu escritorio',

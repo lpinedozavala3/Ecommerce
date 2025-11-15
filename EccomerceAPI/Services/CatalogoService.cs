@@ -116,5 +116,21 @@ namespace EccomerceAPI.Services
                             .ToList()
                     });
         }
+
+        public async Task<IReadOnlyList<CategoriaDto>> ObtenerCategorias(Guid emisorId)
+        {
+            return await _db.Categoria
+                .AsNoTracking()
+                .Where(c => c.IdEmisor == emisorId)
+                .Select(c => new CategoriaDto
+                {
+                    IdCategoria = c.IdCategoria,
+                    NombreCategoria = c.NombreCategoria,
+                    SlugCategoria = c.SlugCategoria,
+                    ProductosVisibles = c.IdProductos.Count(p => p.VisibleEnTienda && p.EmisorId == emisorId)
+                })
+                .OrderBy(c => c.NombreCategoria)
+                .ToListAsync();
+        }
     }
 }

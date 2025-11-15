@@ -6,6 +6,7 @@ import { CatalogoService } from 'src/app/core/services/catalogo.service';
 import { CarritoService } from 'src/app/core/services/carrito.service';
 import { ProductoFilter } from 'src/app/core/models/Filters/ProductoFilter';
 import { PagedResponse } from 'src/app/core/models/Paged';
+import { StoreContextService } from 'src/app/core/services/store-context.service';
 
 @Component({
   selector: 'app-novedades',
@@ -21,7 +22,8 @@ export class NovedadesComponent implements OnInit {
     private catalogo: CatalogoService,
     private carrito: CarritoService,
     private router: Router,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    public store: StoreContextService
   ) {
     this.page.pageSize = 12;
   }
@@ -72,7 +74,7 @@ export class NovedadesComponent implements OnInit {
   }
 
   verDetalle(producto: Producto): void {
-    this.router.navigate(['/producto', producto.productoId]);
+    this.router.navigate(this.store.storeLink('producto', producto.productoId));
   }
 
   getPrimaryCategoria(producto: Producto): string | undefined {

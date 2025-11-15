@@ -11,6 +11,7 @@ import { Page } from 'src/app/core/models/Page';
 import { ProductoFilter } from 'src/app/core/models/Filters/ProductoFilter';
 import { PagedResponse } from 'src/app/core/models/Paged';
 import { Categoria } from 'src/app/core/models/Categoria.';
+import { StoreContextService } from 'src/app/core/services/store-context.service';
 
 @Component({
   selector: 'app-catalogo',
@@ -35,7 +36,8 @@ export class CatalogoComponent implements OnInit, OnDestroy {
     private carrito: CarritoService,
     private router: Router,
     private route: ActivatedRoute,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    public store: StoreContextService
   ) {
     this.page.pageSize = 12;
   }
@@ -158,7 +160,7 @@ export class CatalogoComponent implements OnInit, OnDestroy {
   }
 
   verDetalle(producto: Producto): void {
-    this.router.navigate(['/producto', producto.productoId]);
+    this.router.navigate(this.store.storeLink('producto', producto.productoId));
   }
 
   clearFilters(): void {

@@ -6,6 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { CatalogoService } from 'src/app/core/services/catalogo.service';
 import { CarritoService } from 'src/app/core/services/carrito.service';
 import { ProductoDetalle } from 'src/app/core/models/producto';
+import { StoreContextService } from 'src/app/core/services/store-context.service';
 
 @Component({
   selector: 'app-producto-detalle',
@@ -22,6 +23,7 @@ export class ProductoDetalleComponent implements OnInit, OnDestroy {
     private catalogo: CatalogoService,
     private carrito: CarritoService,
     private snack: MatSnackBar,
+    public store: StoreContextService,
     private router: Router
   ) {}
 
@@ -80,6 +82,6 @@ export class ProductoDetalleComponent implements OnInit, OnDestroy {
     this.snack.open('Producto agregado al carrito', 'Ver carrito', {
       duration: 2500,
       horizontalPosition: 'right'
-    }).onAction().subscribe(() => this.router.navigate(['/carrito']));
+    }).onAction().subscribe(() => this.router.navigate(this.store.storeLink('carrito')));
   }
 }

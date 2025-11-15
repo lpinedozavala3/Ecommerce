@@ -3,7 +3,7 @@
     <div class="footer__brand">
       <span class="icon">M</span>
       <div>
-        <strong>Mi Tienda</strong>
+        <strong>{{ storeName }}</strong>
         <p>Soluciones e-commerce con un estilo minimalista y funcional.</p>
       </div>
     </div>
@@ -11,13 +11,13 @@
     <nav class="footer__links">
       <div>
         <span class="title">Compañía</span>
-        <a routerLink="/inicio">Inicio</a>
-        <a routerLink="/novedades">Novedades</a>
+        <a [routerLink]="store.storeLink('inicio')">Inicio</a>
+        <a [routerLink]="store.storeLink('novedades')">Novedades</a>
       </div>
       <div>
         <span class="title">Soporte</span>
-        <a routerLink="/contacto">Contacto</a>
-        <a routerLink="/pedidos">Mis pedidos</a>
+        <a [routerLink]="store.storeLink('contacto')">Contacto</a>
+        <a [routerLink]="store.storeLink('pedidos')">Mis pedidos</a>
         <a href="mailto:hola@mitienda.cl">hola@mitienda.cl</a>
       </div>
       <div>
@@ -30,7 +30,7 @@
   </div>
 
   <div class="footer__legal">
-    <span>©2025 Mi Tienda. Todos los derechos reservados.</span>
+    <span>©2025 {{ storeName }}. Todos los derechos reservados.</span>
     <div class="footer__legal-links">
       <a href="#">Privacidad</a>
       <a href="#">Términos</a>

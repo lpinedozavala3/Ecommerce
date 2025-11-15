@@ -8,5 +8,6 @@ namespace EccomerceAPI.Interfaces
         Task<(List<ProductoDto> Items, int Total)> ListFilter(ProductoFilter filter, PaginationFilter pagination);
         Task<ProductoDetalleDto?> ObtenerDetalle(Guid productoId, Guid emisorId);
         Task<Dictionary<Guid, ProductoDto>> ObtenerPorIds(IEnumerable<Guid> ids, Guid emisorId);
+        Task<IReadOnlyList<CategoriaDto>> ObtenerCategorias(Guid emisorId);
     }
 }

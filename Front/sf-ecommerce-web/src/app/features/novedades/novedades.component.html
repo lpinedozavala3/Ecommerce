@@ -5,7 +5,7 @@
       <h1>Recién llegados a la colección</h1>
       <p>Estos productos acaban de llegar y están disponibles por tiempo limitado. Descubre lanzamientos frescos y curados por nuestro equipo.</p>
     </div>
-    <button mat-stroked-button color="primary" routerLink="/inicio">
+    <button mat-stroked-button color="primary" [routerLink]="store.storeLink('inicio')">
       Ver catálogo completo
       <mat-icon>chevron_right</mat-icon>
     </button>
@@ -17,7 +17,7 @@
         <button type="button" (click)="verDetalle(producto)">
           <img
             *ngIf="producto.imagenBase64; else noImagen"
-            [src]="'data:image/png;base64,' + producto.imagenBase64"
+            [src]="producto.imagenBase64"
             [alt]="producto.nombrePublico || 'Producto'"
             loading="lazy"
           />

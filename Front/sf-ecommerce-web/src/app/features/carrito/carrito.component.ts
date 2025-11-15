@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { CarritoService, ItemCarrito } from 'src/app/core/services/carrito.service';
 import { CartApiService } from 'src/app/core/services/cart-api.service';
 import { CartSummary } from 'src/app/core/models/cart';
+import { StoreContextService } from 'src/app/core/services/store-context.service';
 
 @Component({
   selector: 'app-carrito',
@@ -24,6 +25,7 @@ export class CarritoComponent implements OnInit, OnDestroy {
     private carrito: CarritoService,
     private cartApi: CartApiService,
     private snack: MatSnackBar,
+    public store: StoreContextService,
     private router: Router
   ) {}
 
@@ -54,7 +56,7 @@ export class CarritoComponent implements OnInit, OnDestroy {
   }
 
   irAlCheckout(): void {
-    this.router.navigate(['/checkout']);
+    this.router.navigate(this.store.storeLink('checkout'));
   }
 
   private obtenerResumen(): void {

@@ -1,5 +1,5 @@
 <div class="layout">
-  <a class="volver" routerLink="/inicio">
+  <a class="volver" [routerLink]="store.storeLink('inicio')">
     <mat-icon>arrow_back</mat-icon>
     Volver a la tienda
   </a>
@@ -27,7 +27,7 @@
 
       <label class="recordar">
         <mat-checkbox formControlName="recordar">Recordar mi sesión</mat-checkbox>
-        <a class="olvide" routerLink="/contacto">¿Olvidaste tu contraseña?</a>
+        <a class="olvide" [routerLink]="store.storeLink('contacto')">¿Olvidaste tu contraseña?</a>
       </label>
 
       <button mat-flat-button color="primary" type="submit" [disabled]="loading">
@@ -38,7 +38,7 @@
 
     <footer>
       <span>¿Aún no tienes cuenta?</span>
-      <a routerLink="/auth/registro">Regístrate aquí</a>
+      <a [routerLink]="store.storeLink('auth', 'registro')">Regístrate aquí</a>
     </footer>
   </section>
 </div>

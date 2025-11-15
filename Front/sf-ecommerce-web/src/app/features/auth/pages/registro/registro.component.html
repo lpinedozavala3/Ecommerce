@@ -1,5 +1,5 @@
 <div class="layout">
-  <a class="volver" routerLink="/inicio">
+  <a class="volver" [routerLink]="store.storeLink('inicio')">
     <mat-icon>arrow_back</mat-icon>
     Volver a la tienda
   </a>
@@ -52,7 +52,7 @@
 
     <footer>
       <span>¿Ya tienes cuenta?</span>
-      <a routerLink="/auth/login">Inicia sesión</a>
+      <a [routerLink]="store.storeLink('auth', 'login')">Inicia sesión</a>
     </footer>
   </section>
 </div>

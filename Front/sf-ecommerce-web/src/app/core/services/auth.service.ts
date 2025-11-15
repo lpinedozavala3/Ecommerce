@@ -1,9 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
 import { AuthResponse, LoginPayload, RegistroPayload } from '../models/auth';
+import { ApiResponse } from '../models/api-response';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -12,10 +14,14 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   login(payload: LoginPayload): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.baseUrl}/login`, payload);
+    return this.http
+      .post<ApiResponse<AuthResponse>>(`${this.baseUrl}/login`, payload)
+      .pipe(map((resp: ApiResponse<AuthResponse>) => resp.data));
   }
 
   registro(payload: RegistroPayload): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.baseUrl}/register`, payload);
+    return this.http
+      .post<ApiResponse<AuthResponse>>(`${this.baseUrl}/register`, payload)
+      .pipe(map((resp: ApiResponse<AuthResponse>) => resp.data));
   }
 }

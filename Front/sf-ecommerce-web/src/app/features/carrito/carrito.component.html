@@ -15,7 +15,7 @@
       <mat-card-content>
         <article class="item" *ngFor="let item of items; trackBy: trackById">
           <div class="thumb" [ngClass]="{ 'sin-imagen': !item.imagenBase64 }">
-            <img *ngIf="item.imagenBase64" [src]="'data:image/png;base64,' + item.imagenBase64" [alt]="item.nombre" />
+            <img *ngIf="item.imagenBase64" [src]="item.imagenBase64" [alt]="item.nombre" />
             <mat-icon *ngIf="!item.imagenBase64">image</mat-icon>
           </div>
 
@@ -94,7 +94,7 @@
     <mat-icon>shopping_bag</mat-icon>
     <h2>Tu carrito está vacío</h2>
     <p>Explora nuestra tienda y agrega tus productos favoritos.</p>
-    <button mat-flat-button color="primary" routerLink="/inicio">
+    <button mat-flat-button color="primary" [routerLink]="store.storeLink('inicio')">
       <mat-icon>storefront</mat-icon>
       Ir a la tienda
     </button>

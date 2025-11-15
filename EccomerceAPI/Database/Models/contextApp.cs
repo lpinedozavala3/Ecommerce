@@ -845,10 +845,9 @@ namespace Database.Models
                     .HasDefaultValueSql("(sysutcdatetime())");
 
                 entity.Property(e => e.EstadoTienda)
-                    .HasMaxLength(20)
-                    .IsUnicode(false)
+                    .IsRequired()
                     .HasColumnName("ESTADO_TIENDA")
-                    .HasDefaultValueSql("('ACTIVA')");
+                    .HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.IdEmisor).HasColumnName("ID_EMISOR");
 

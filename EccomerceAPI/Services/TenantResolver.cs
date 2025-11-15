@@ -1,39 +1,36 @@
-﻿using Database.Models;
+using System;
+using System.Threading.Tasks;
 using EccomerceAPI.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace EccomerceAPI.Services
 {
     public class TenantResolver : ITenantResolver
     {
-        private readonly contextApp _db; // <-- tu DbContext scaffoldeado
-        public TenantResolver(contextApp db) => _db = db;
+        private readonly ITiendaService _tiendaService;
+
+        public TenantResolver(ITiendaService tiendaService)
+        {
+            _tiendaService = tiendaService;
+        }
 
         public async Task<(Guid tiendaId, Guid emisorId)> ResolveAsync(HttpContext http)
         {
-            // 1) Lee el dominio desde el header (front) o, si no viene, del host de la request
-            var domain = http.Request.Headers["X-Store-Domain"].FirstOrDefault();
-            if (string.IsNullOrWhiteSpace(domain))
-                domain = http.Request.Host.Host;
+            var storeName = http.Request.Headers["X-Store-Name"].FirstOrDefault();
 
-            domain = domain?.ToLowerInvariant();
-
-            // 2) ecommerce.DOMINIO -> TIENDA -> EMISOR
-            var q = from d in _db.Dominios                              // Dominio
-                    join t in _db.Tienda on d.IdTienda equals t.IdTienda // Tiendum
-                    join e in _db.Emisors on t.IdEmisor equals e.EmisorId
-                    where d.ValorDominio.ToLower() == domain
-                          && (d.EstadoVerificacion == "VERIFICADO" || d.EstadoVerificacion == "PENDIENTE")
-                    select new { t.IdTienda, e.EmisorId };
-
-            var result = await q.AsNoTracking().FirstOrDefaultAsync();
-            if (result is null)
+            if (string.IsNullOrWhiteSpace(storeName))
             {
-                throw new InvalidOperationException(
-                    $"Dominio '{domain}' no está configurado en ecommerce.DOMINIO.");
+                throw new InvalidOperationException("No se proporcionó el nombre de fantasía de la tienda.");
             }
 
-            return (result.IdTienda, result.EmisorId);
+            storeName = storeName.Trim();
+
+            var tenant = await _tiendaService.ObtenerPorNombreFantasiaAsync(storeName);
+            if (tenant is null)
+            {
+                throw new InvalidOperationException($"La tienda '{storeName}' no está configurada o no se encuentra activa.");
+            }
+
+            return (tenant.TiendaId, tenant.EmisorId);
         }
     }
 }
