@@ -28,7 +28,13 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { initialNavigation: 'enabled' })],
+  imports: [
+    RouterModule.forRoot(routes, {
+      // Allow the root component to render (and show the loading indicator)
+      // while the guards finish validating the store during the first navigation.
+      initialNavigation: 'enabledNonBlocking'
+    })
+  ],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}
