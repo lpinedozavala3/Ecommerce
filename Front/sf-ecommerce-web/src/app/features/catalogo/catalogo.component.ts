@@ -172,10 +172,6 @@ export class CatalogoComponent implements OnInit, OnDestroy {
     });
   }
 
-  clearSearchField(): void {
-    this.searchControl.setValue('');
-  }
-
   get hasActiveFilters(): boolean {
     return !!this.searchTerm || !!this.selectedCategoriaId;
   }
