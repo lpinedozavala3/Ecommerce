@@ -181,17 +181,8 @@
   }
 }
 
-.pedidos__skeleton {
-  display: grid;
-  gap: 1.5rem;
-
-  .skeleton-card {
-    height: 160px;
-    border-radius: 22px;
-    background: linear-gradient(90deg, rgba(148, 163, 184, 0.16), rgba(203, 213, 225, 0.3), rgba(148, 163, 184, 0.16));
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-  }
+.pedidos__loading {
+  padding: 2rem 0;
 }
 
 .pedidos__empty {
@@ -328,19 +319,6 @@
       color: #047857;
     }
   }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
-}
-
-:host ::ng-deep .mat-mdc-progress-spinner circle {
-  stroke: currentColor;
 }
 
 /* Estilos para el diálogo de edición de dirección (aplicado vía panelClass) */

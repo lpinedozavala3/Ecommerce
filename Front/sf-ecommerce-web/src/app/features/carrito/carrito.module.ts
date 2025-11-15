@@ -7,9 +7,9 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 import { CarritoRoutingModule } from './carrito-routing.module';
 import { CarritoComponent } from './carrito.component';
@@ -26,7 +26,7 @@ import { CarritoComponent } from './carrito.component';
     MatDividerModule,
     MatInputModule,
     MatSnackBarModule,
-    MatProgressSpinnerModule,
+    SharedModule,
     MatListModule,
     MatTooltipModule
   ]

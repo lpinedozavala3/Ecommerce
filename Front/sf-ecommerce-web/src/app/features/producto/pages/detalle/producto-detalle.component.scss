@@ -114,23 +114,7 @@
   gap: 1rem;
   padding: 3rem 0;
   color: #6b7280;
-
-  .skeleton {
-    width: min(560px, 90%);
-    height: 260px;
-    border-radius: 16px;
-    background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
-    background-size: 400% 100%;
-    animation: shimmer 1.5s infinite;
-
-    &.texto {
-      height: 18px;
-      margin-top: 1rem;
-    }
+  app-loading {
+    width: 100%;
   }
-}
-
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
 }

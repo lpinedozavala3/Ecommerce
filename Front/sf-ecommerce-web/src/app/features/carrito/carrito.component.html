@@ -42,7 +42,7 @@
           </div>
         </article>
 
-        <mat-progress-spinner *ngIf="cargando" mode="indeterminate" diameter="32"></mat-progress-spinner>
+        <app-loading *ngIf="cargando" message="Actualizando carrito..."></app-loading>
       </mat-card-content>
     </mat-card>
 

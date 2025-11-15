@@ -53,12 +53,8 @@
 
   <ng-template #novedadesFallback>
     <div class="novedades__empty" *ngIf="!loading">No tenemos novedades disponibles por ahora. Vuelve pronto.</div>
-    <div class="novedades__skeleton" *ngIf="loading">
-      <div class="skeleton-card" *ngFor="let _ of [].constructor(page.pageSize)">
-        <div class="sk-img shimmer"></div>
-        <div class="sk-line shimmer"></div>
-        <div class="sk-line short shimmer"></div>
-      </div>
+    <div class="novedades__loading" *ngIf="loading">
+      <app-loading message="Cargando novedades..."></app-loading>
     </div>
   </ng-template>
 

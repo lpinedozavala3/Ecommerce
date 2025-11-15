@@ -7,9 +7,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 import { CatalogoRoutingModule } from './catalogo-routing.module';
 import { CatalogoComponent } from './catalogo.component';
@@ -33,7 +33,7 @@ import { DetalleComponent } from './pages/detalle/detalle.component';
     MatIconModule,
     MatCardModule,
     MatSelectModule,
-    MatProgressSpinnerModule,
+    SharedModule,
     MatPaginatorModule,
     MatTooltipModule
   ]

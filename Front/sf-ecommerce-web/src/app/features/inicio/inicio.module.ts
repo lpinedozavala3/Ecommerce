@@ -12,6 +12,7 @@ import { InicioComponent } from './pages/inicio/inicio.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatCardModule,
     MatButtonModule,
     MatPaginatorModule,
-    MatTooltipModule
+    MatTooltipModule,
+    SharedModule
   ]
 })
 export class InicioModule { }

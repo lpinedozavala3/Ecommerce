@@ -1,3 +1,10 @@
+<app-loading
+  *ngIf="storeLoading$ | async"
+  [fullscreen]="true"
+  message="Cargando tienda..."
+  ariaLabel="Cargando tienda"
+></app-loading>
+
 <app-header></app-header>
 
 <main class="contenedor">

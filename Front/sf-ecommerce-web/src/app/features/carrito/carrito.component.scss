@@ -40,8 +40,8 @@
     flex-direction: column;
     gap: 1rem;
 
-    mat-progress-spinner {
-      align-self: center;
+    app-loading {
+      width: 100%;
     }
   }
 

@@ -252,10 +252,8 @@
   color: var(--app-text-muted);
 }
 
-.catalogo-loading {
-  mat-progress-spinner {
-    --mdc-circular-progress-active-indicator-color: var(--app-primary);
-  }
+.catalogo-loading app-loading {
+  width: 100%;
 }
 
 .paginator-row {

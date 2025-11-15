@@ -50,8 +50,7 @@
 
 <ng-template #estado>
   <div class="estado container" *ngIf="loading; else sinProducto">
-    <div class="skeleton"></div>
-    <div class="skeleton texto"></div>
+    <app-loading message="Cargando producto..." size="lg"></app-loading>
   </div>
 </ng-template>
 
