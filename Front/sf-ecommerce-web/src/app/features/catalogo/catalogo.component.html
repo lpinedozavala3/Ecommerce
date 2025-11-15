@@ -5,23 +5,8 @@
     <p class="lead">Encuentra accesorios, tecnología y mucho más en un solo lugar.</p>
   </header>
 
-  <section class="filters-card">
+  <section class="filters-card filters-card--compact">
     <form class="filters-form" (ngSubmit)="$event.preventDefault()">
-      <mat-form-field appearance="outline">
-        <mat-label>Buscar productos</mat-label>
-        <input matInput [formControl]="searchControl" placeholder="Escribe un producto, marca o categoría" />
-        <button
-          mat-icon-button
-          matSuffix
-          type="button"
-          aria-label="Limpiar búsqueda"
-          *ngIf="searchTerm"
-          (click)="clearSearchField()"
-        >
-          <mat-icon>close</mat-icon>
-        </button>
-      </mat-form-field>
-
       <mat-form-field appearance="outline">
         <mat-label>Categoría</mat-label>
         <mat-select [formControl]="categoriaControl" placeholder="Todas las categorías">

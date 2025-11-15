@@ -11,6 +11,48 @@
     </button>
   </div>
 
+  <section class="filters-card filters-card--compact">
+    <form class="filters-form" (ngSubmit)="$event.preventDefault()">
+      <mat-form-field appearance="outline">
+        <mat-label>Categoría</mat-label>
+        <mat-select [formControl]="categoriaControl" placeholder="Todas las categorías">
+          <mat-option [value]="null">Todas las categorías</mat-option>
+          <mat-option *ngFor="let categoria of categorias" [value]="categoria.idCategoria">
+            {{ categoria.nombreCategoria }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button
+        mat-stroked-button
+        color="primary"
+        type="button"
+        class="clear-filters"
+        *ngIf="hasActiveFilters"
+        (click)="clearFilters()"
+      >
+        <mat-icon>filter_alt_off</mat-icon>
+        Limpiar filtros
+      </button>
+    </form>
+
+    <div class="filters-summary">
+      <span *ngIf="!loading && page.totalElements">
+        Mostrando {{ showingRangeStart }}-{{ showingRangeEnd }} de {{ page.totalElements }} novedades
+      </span>
+      <span *ngIf="!loading && !page.totalElements && hasActiveFilters">
+        Ajusta los criterios o limpia los filtros para ver más resultados.
+      </span>
+      <span *ngIf="!loading && !page.totalElements && !hasActiveFilters">
+        No tenemos novedades disponibles por ahora.
+      </span>
+    </div>
+
+    <div class="active-filters" *ngIf="hasActiveFilters">
+      <span *ngIf="categoriaSeleccionadaNombre">Categoría: {{ categoriaSeleccionadaNombre }}</span>
+    </div>
+  </section>
+
   <div class="novedades__grid" *ngIf="!loading && productos.length; else novedadesFallback">
     <mat-card class="producto" appearance="outlined" *ngFor="let producto of productos">
       <div class="thumb">
